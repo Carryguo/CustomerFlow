@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carry.customerflow.mapper.RegisterMapper">
+    <!--<insert id="insertMachine_data"  useGeneratedKeys="true" keyProperty="id">-->
+    <!--insert into machine_data-->
+    <!--(shop,machine_id,beat)-->
+    <!--values-->
+    <!--(#{shop},#{machine_id},CURRENT_TIMESTAMP)-->
+  <!--</insert>-->
+
+
+    <!--<update id="updateBeat" >-->
+        <!--UPDATE-->
+        <!--machine_data-->
+        <!--SET-->
+        <!--beat = CURRENT_TIMESTAMP-->
+        <!--WHERE-->
+        <!--shop=#{shop} and machine_id=#{machine_id}-->
+    <!--</update>-->
+
+
+    <!--<select id="searchMachine_data" resultType="com.carry.wifi_monitor.entity.Machine_data" >-->
+    <!--select machine_id,beat from machine_data where shop=#{shop}-->
+  <!--</select>-->
+
+    <!--<select id="checkMachine_dataExist" resultType="Object" >-->
+    <!--select NULLIF(machine_id,null) from machine_data where shop=#{shop} and machine_id=#{machine_id}-->
+  <!--</select>-->
+    <select id="findAddressByUsername" resultType="com.carry.customerflow.bean.Shop" >
+    select * from shop where username=#{username}
+  </select>
+
+
+    <insert id="insertUser">
+    insert into user
+    (uid,username,password,address)
+    values
+    (#{uid},#{username},#{password},#{address})
+    </insert>
+
+</mapper>

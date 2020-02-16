@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carry.customerflow.mapper.MachineMapper">
+    <insert id="insertMachine">
+    insert into machine
+    (username,machineId,address)
+    values
+    (#{username},#{machineId},#{address})
+    </insert>
+
+    <select id="findMachineByAddress" resultType="com.carry.customerflow.bean.Machine" >
+    select * from machine where username=#{username} and address=#{address}
+  </select>
+
+    <delete id="deleteMachineByMachineId">
+        delete from machine where machineId=#{machineId}
+    </delete>
+</mapper>

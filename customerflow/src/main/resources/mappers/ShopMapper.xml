@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carry.customerflow.mapper.ShopMapper">
+
+    <select id="findShopByUsername" resultType="com.carry.customerflow.bean.Shop" >
+    select * from shop where username=#{username}
+  </select>
+
+    <insert id="insertShop">
+    insert into shop
+    (username,longitude,latitude,address)
+    values
+    (#{username},#{longitude},#{latitude},#{address})
+    </insert>
+
+</mapper>
