@@ -4,6 +4,7 @@ import com.carry.customerflow.bean.Permission;
 import com.carry.customerflow.bean.Role;
 import com.carry.customerflow.bean.User;
 import com.carry.customerflow.service.UserService;
+import com.carry.customerflow.utils.ShiroUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -66,7 +67,9 @@ public class AuthRealm extends AuthorizingRealm {
         UsernamePasswordToken token = (UsernamePasswordToken)authenticationToken;
         String username = token.getUsername();
         User user = userService.findByUsername(username);
-        return new SimpleAuthenticationInfo(user,user.getPassword(),this.getClass().getName());
+        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user,user.getPassword(),this.getClass().getName());
+        ShiroUtil.deleteCache(username,true);
+        return simpleAuthenticationInfo;
     }
     /**
      * 清空缓存(一般在修改权限的service中调用)

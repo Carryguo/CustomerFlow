@@ -3,17 +3,18 @@ package com.carry.customerflow.config;
 import com.carry.customerflow.matcher.CredentialMatcher;
 import com.carry.customerflow.realm.AuthRealm;
 import com.carry.customerflow.session.ShiroSessionManager;
-import net.sf.ehcache.CacheManager;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +23,15 @@ import java.util.LinkedHashMap;
 
 @Configuration
 public class ShiroConfig {
+
+    //Redis配置
+    @Value("${spring.redis.host}")
+    private String host;
+    @Value("${spring.redis.port}")
+    private int port;
+    @Value("${spring.redis.timeout}")
+    private int timeout;
+
     /**
      　　* 开启shiro aop注解支持.
      　　* 使用代理方式;所以需要开启代码支持;
@@ -29,10 +39,10 @@ public class ShiroConfig {
          * 这里的@Qualifier的作用是使用指定的service/bean,而这里的@Qualifier是指下文的 @Bean("credentialMatcher")
      　　*/
     @Bean("authRealm")
-    public AuthRealm authRealm(@Qualifier("credentialMatcher")CredentialMatcher matcher){
+    public AuthRealm authRealm(@Qualifier("credentialMatcher")CredentialMatcher matcher,@Qualifier("myCacheManager")RedisCacheManager cacheManager){
         AuthRealm authRealm = new AuthRealm();
         //开启Cache管理
-//        authRealm.setCacheManager(ehCacheManager);
+        authRealm.setCacheManager(cacheManager);
         authRealm.setCredentialsMatcher(matcher);
         return authRealm;
     }
@@ -47,12 +57,11 @@ public class ShiroConfig {
      * @return manager
      */
     @Bean("securityManager")
-    public SecurityManager securityManager(@Qualifier("authRealm") AuthRealm authRealm,@Qualifier("sessionManager") SessionManager sessionManager,EhCacheManager ehCacheManager)
+    public SecurityManager securityManager(@Qualifier("authRealm") AuthRealm authRealm,@Qualifier("sessionManager") SessionManager sessionManager)
     {
         DefaultSecurityManager  manager = new DefaultWebSecurityManager();
         manager.setRealm(authRealm);
         manager.setSessionManager(sessionManager);
-        manager.setCacheManager(ehCacheManager);
         return manager;
     }
 
@@ -87,7 +96,7 @@ public class ShiroConfig {
 //        filterChainDefinitionMap.put("/admin","roles[admin]");
 //        filterChainDefinitionMap.put("/edit","perms[edit]");
 //        filterChainDefinitionMap.put("/admin","authc");
-//        filterChainDefinitionMap.put("/edit","roles[admin]");
+        filterChainDefinitionMap.put("/edit","roles[admin]");
         //开发完再把限权打开
         filterChainDefinitionMap.put("/**","anon");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -113,21 +122,57 @@ public class ShiroConfig {
         return creator;
     }
 
-
-
     @Bean("sessionManager")
     public SessionManager sessionManager() {
         ShiroSessionManager shiroSessionManager = new ShiroSessionManager();
+        shiroSessionManager.setSessionDAO(redisSessionDAO());
         return shiroSessionManager;
     }
 
-    @Bean
-    public EhCacheManager ehCacheManager(CacheManager cacheManager) {
-        System.out.println("进来ehCacheManager");
-        EhCacheManager em = new EhCacheManager();
-        //将ehcacheManager转换成shiro包装后的ehcacheManager对象
-        em.setCacheManager(cacheManager);
-//        em.setCacheManagerConfigFile("classpath:ehcache.xml");
-        return em;
+
+    /**
+     * 配置Cache管理器
+     * 用于往Redis存储权限和角色标识
+     * @Attention 使用的是shiro-redis开源插件
+     */
+    @Bean("myCacheManager")
+    public RedisCacheManager cacheManager() {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager());
+//        redisCacheManager.setKeyPrefix(CACHE_KEY);
+        // 配置缓存的话要求放在session里面的实体类必须有个id标识
+        redisCacheManager.setPrincipalIdFieldName("username");
+        return redisCacheManager;
     }
+    /**
+     * 配置RedisSessionDAO
+     * @Attention 使用的是shiro-redis开源插件
+     * @Author Sans
+     * @CreateTime 2019/6/12 13:44
+     */
+    @Bean
+    public RedisSessionDAO redisSessionDAO() {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager());
+//        redisSessionDAO.setSessionIdGenerator(sessionIdGenerator());
+//        redisSessionDAO.setKeyPrefix(SESSION_KEY);
+        redisSessionDAO.setExpire(1800);
+        return redisSessionDAO;
+    }
+
+    /**
+     * 配置Redis管理器
+     * @Attention 使用的是shiro-redis开源插件
+     * @Author Sans
+     * @CreateTime 2019/6/12 11:06
+     */
+    @Bean
+    public RedisManager redisManager(){
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost(host);
+        redisManager.setPort(port);
+        redisManager.setTimeout(timeout);
+        return  redisManager;
+    }
+
 }

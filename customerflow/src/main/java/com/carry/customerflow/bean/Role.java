@@ -2,11 +2,12 @@ package com.carry.customerflow.bean;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class Role {
+public class Role implements Serializable {
     /**
      * 角色id
      */

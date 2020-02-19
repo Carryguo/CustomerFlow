@@ -2,8 +2,10 @@ package com.carry.customerflow.bean;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Permission {
+public class Permission implements Serializable {
     /**
      * id
      */
