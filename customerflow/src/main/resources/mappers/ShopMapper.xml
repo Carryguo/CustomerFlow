@@ -13,4 +13,8 @@
     (#{username},#{longitude},#{latitude},#{address})
     </insert>
 
+    <select id="findAllShop" resultType="java.lang.String" >
+    select address from shop
+  </select>
+
 </mapper>

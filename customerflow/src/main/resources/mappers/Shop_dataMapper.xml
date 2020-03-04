@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carry.customerflow.mapper.Shop_dataMapper">
+    <select id="selectWithin1hour" resultType="java.lang.Integer" >
+    select count(*) from shop_data where update_time>=(NOW() - interval 1 hour)
+  </select>
+
+    <insert id="insertShop">
+        insert into shop_data
+        (address,walker_number,customer_number,new_customer,jump_out,dynamic_customer,hour_customer_number,hour_in_customer_number,update_time,hours)
+        values
+        (#{address},0,0,0,0,0,0,0,CURRENT_TIMESTAMP,#{hours})
+    </insert>
+
+    <update id="updateWithin1hour" >
+        UPDATE
+        shop_data
+        SET
+        update_time = CURRENT_TIMESTAMP, hours = #{hours}
+        WHERE
+        id in (select id from (select * from shop_data ORDER BY update_time desc LIMIT #{num})as t)
+    </update>
+
+    <update id="updateShop_data" >
+        UPDATE
+        shop_data
+        SET
+        customer_number = customer_number+#{customer},walker_number =walker_number+#{walker},new_customer = new_customer+#{newIn},hour_in_customer_number = hour_in_customer_number+#{hour_in_customer}}
+        WHERE
+        id in (select id from (select * from shop_data where address=#{address} ORDER BY update_time desc LIMIT 1)as t)
+    </update>
+
+</mapper>

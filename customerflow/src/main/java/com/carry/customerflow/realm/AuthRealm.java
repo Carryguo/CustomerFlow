@@ -68,6 +68,7 @@ public class AuthRealm extends AuthorizingRealm {
         String username = token.getUsername();
         User user = userService.findByUsername(username);
         SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user,user.getPassword(),this.getClass().getName());
+        //认证成功开始踢人
         ShiroUtil.deleteCache(username,true);
         return simpleAuthenticationInfo;
     }
@@ -78,6 +79,7 @@ public class AuthRealm extends AuthorizingRealm {
         PrincipalCollection principals=SecurityUtils.getSubject().getPrincipals();
         super.clearCache(principals);
     }
+
 }
 
 

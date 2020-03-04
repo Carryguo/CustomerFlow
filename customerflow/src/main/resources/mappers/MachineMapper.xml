@@ -3,9 +3,9 @@
 <mapper namespace="com.carry.customerflow.mapper.MachineMapper">
     <insert id="insertMachine">
     insert into machine
-    (username,machineId,address)
+    (username,machineId,address,rssi,status)
     values
-    (#{username},#{machineId},#{address})
+    (#{username},#{machineId},#{address},#{rssi},#{status})
     </insert>
 
     <select id="findMachineByAddress" resultType="com.carry.customerflow.bean.Machine" >
@@ -15,4 +15,8 @@
     <delete id="deleteMachineByMachineId">
         delete from machine where machineId=#{machineId}
     </delete>
+
+    <select id="findAllMachine" resultType="com.carry.customerflow.bean.Machine" >
+    select * from machine
+  </select>
 </mapper>

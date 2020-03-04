@@ -96,7 +96,8 @@ public class ShiroConfig {
 //        filterChainDefinitionMap.put("/admin","roles[admin]");
 //        filterChainDefinitionMap.put("/edit","perms[edit]");
 //        filterChainDefinitionMap.put("/admin","authc");
-        filterChainDefinitionMap.put("/edit","roles[admin]");
+        filterChainDefinitionMap.put("/test","roles[boss,admin]");
+        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,admin]");
         //开发完再把限权打开
         filterChainDefinitionMap.put("/**","anon");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -126,6 +127,7 @@ public class ShiroConfig {
     public SessionManager sessionManager() {
         ShiroSessionManager shiroSessionManager = new ShiroSessionManager();
         shiroSessionManager.setSessionDAO(redisSessionDAO());
+        shiroSessionManager.setGlobalSessionTimeout(7200000);
         return shiroSessionManager;
     }
 
@@ -156,7 +158,7 @@ public class ShiroConfig {
         redisSessionDAO.setRedisManager(redisManager());
 //        redisSessionDAO.setSessionIdGenerator(sessionIdGenerator());
 //        redisSessionDAO.setKeyPrefix(SESSION_KEY);
-        redisSessionDAO.setExpire(1800);
+        redisSessionDAO.setExpire(7200);
         return redisSessionDAO;
     }
 

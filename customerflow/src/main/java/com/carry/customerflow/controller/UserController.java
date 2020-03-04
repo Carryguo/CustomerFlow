@@ -16,26 +16,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class TestController {
+public class UserController {
 
     @Autowired
     private AuthRealm authRealm;
     @RequestMapping("/login")
     public Msg login(){
-        return Msg.failure().setCode(401).setMessage("未登录");
+        return Msg.failure().setCode(444).setMessage("未登录");
     }
 
     @RequestMapping("/unauthorized")
     public Msg unauthorized(){
-        return  Msg.failure().setCode(401).setMessage("没有权限");
+        return  Msg.failure().setCode(443).setMessage("没有权限");
     }
 
-    @RequestMapping("/edit")
+    @GetMapping("/test")
     @ResponseBody
-    public String edit(){
+    public String test(){
        User user = (User)SecurityUtils.getSubject().getPrincipal();
         System.out.println(user.getUsername());
-        return "edit success";
+        return "test success and username is " + user.getUsername();
     }
 
     @RequestMapping("/checkSession")
@@ -80,12 +80,14 @@ public class TestController {
     {
 
         String sessionId = null;
+        User user;
         UsernamePasswordToken token = new UsernamePasswordToken(username,password);
         //获取主体
         Subject subject = SecurityUtils.getSubject();
         try{
             subject.login(token);
             sessionId = (String) subject.getSession().getId();
+            user = (User)SecurityUtils.getSubject().getPrincipal();
         }catch (AuthenticationException e){
             e.printStackTrace();
             return Msg.failure("账号或密码错误");
@@ -95,6 +97,7 @@ public class TestController {
         }
         Map<String,String> map = new HashMap<>();
         map.put("token",sessionId);
+        map.put("uid",user.getUid());
         return Msg.success().setData(map);
     }
 }

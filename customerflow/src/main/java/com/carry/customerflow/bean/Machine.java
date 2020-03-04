@@ -1,7 +1,6 @@
 package com.carry.customerflow.bean;
 
 import lombok.Data;
-
 @Data
 public class Machine {
     /**
@@ -24,4 +23,8 @@ public class Machine {
      * status 设备状态
      */
     private String status;
+    /**
+     * rssi 设备信号强度
+     */
+    private Integer rssi;
 }
