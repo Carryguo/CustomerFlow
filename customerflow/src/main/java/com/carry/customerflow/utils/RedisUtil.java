@@ -159,7 +159,7 @@ public final class RedisUtil {
      * @return 对应的多个键值
      */
     public Map<String, Object> hmget(String key) {
-        return redisTemplate.opsForHash().entries(key);
+        return (Map)redisTemplate.opsForHash().entries(key);
     }
     /**
      * HashSet

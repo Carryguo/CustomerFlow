@@ -25,7 +25,20 @@
         UPDATE
         shop_data
         SET
-        customer_number = customer_number+#{customer},walker_number =walker_number+#{walker},new_customer = new_customer+#{newIn},hour_in_customer_number = hour_in_customer_number+#{hour_in_customer}}
+        customer_number = customer_number+#{customer},walker_number =walker_number+#{walker},new_customer = new_customer+#{newIn},hour_in_customer_number = hour_in_customer_number+#{hour_in_customer}
+        WHERE
+        id in (select id from (select * from shop_data where address=#{address} ORDER BY update_time desc LIMIT 1)as t)
+    </update>
+
+    <select id="searchNowHour_in_customer_number" resultType="java.lang.Integer" >
+    select hour_in_customer_number from shop_data where id in (select id from (select * from shop_data where address=#{address} ORDER BY update_time desc LIMIT 1)as t)
+  </select>
+
+    <update id="updateDataThread" >
+        UPDATE
+        shop_data
+        SET
+        dynamic_customer = #{dynamic_customer},jump_out =jump_out+#{jumpOut_customer},hour_customer_number = #{subHour_customer}
         WHERE
         id in (select id from (select * from shop_data where address=#{address} ORDER BY update_time desc LIMIT 1)as t)
     </update>
