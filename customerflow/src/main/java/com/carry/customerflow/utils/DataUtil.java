@@ -65,8 +65,11 @@ public class DataUtil {
 
     public boolean insertCustomer(String mac,Integer rssi,String address,Integer inJudge,Integer visited_times){
         timestamp = new Timestamp(System.currentTimeMillis());
+//        System.out.println("insertCustomer的timestamp:"+timestamp);
+//        System.out.println(timestamp);
         //插入数据库
         customerService.insertCustomer(mac,rssi,address,timestamp,timestamp,timestamp,inJudge,visited_times);
+//        System.out.println("插入了数据");
         //插入redis缓存
         cacheCustomer(mac,rssi,address,timestamp,timestamp,timestamp,inJudge,visited_times);
         return true;

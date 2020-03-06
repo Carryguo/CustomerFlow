@@ -3,6 +3,7 @@ package com.carry.customerflow;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.carry.customerflow.bean.Machine;
+import com.carry.customerflow.mapper.CustomerMapper;
 import com.carry.customerflow.mapper.Shop_dataMapper;
 import com.carry.customerflow.service.MachineService;
 import com.carry.customerflow.utils.DataUtil;
@@ -15,11 +16,9 @@ import org.springframework.stereotype.Component;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
@@ -53,7 +52,7 @@ public class DataProcessor implements CommandLineRunner {
     private Integer dataSize;
     private Map<String,Object> customerMap;
     private Integer timeCount;//计算离开时间
-    private Timestamp latest_time;//当前时间戳
+        private Timestamp latest_time;//当前时间戳
     private Integer visited_times;//访问次数
 
     private Integer rssiJ;
@@ -64,7 +63,7 @@ public class DataProcessor implements CommandLineRunner {
     //人流量
     private Integer walker = 0;
     //小时客流量
-    private Integer hour_customer = 0;
+//    private Integer hour_customer = 0;
     //小时进店量
     private Integer hour_in_customer = 0;
     //客流量
@@ -89,6 +88,10 @@ public class DataProcessor implements CommandLineRunner {
 
     @Autowired
     private Shop_dataMapper shop_dataMapper;
+
+    @Autowired
+    private CustomerMapper customerMapper;
+
     @Override
     public void run(String... args) throws Exception {
         try {
@@ -134,7 +137,9 @@ public class DataProcessor implements CommandLineRunner {
                             } else
                                 continue;
                             //如果设备没有被添加,则不接受处理
+//                            System.out.println(redisUtil.hmget("machine"));
                             if (machineId.matches(idM)&&redisUtil.hget("machine",machineId)!=null){
+//                                System.out.println("进来进行处理");
                             //分析各个mac的数据
                                 dataSize = jsonArray.size();
                                 for (int i = 0; i < dataSize; i++){
@@ -146,6 +151,7 @@ public class DataProcessor implements CommandLineRunner {
                                     if (mac != null && mac.matches(macM) && rssi != null && rssi.toString().matches(rssiM)&&!mac.startsWith("00:00")){
                                         //当前时间戳
                                         latest_time = new Timestamp(System.currentTimeMillis());
+//                                        System.out.println("DataProcessor的latest_time:"+latest_time);
                                         //获取缓存中的rssi和 address
                                         rssiJ = (Integer)((Map)redisUtil.hget("machine",machineId)).get("rssi");
                                         address = (String)((Map)redisUtil.hget("machine",machineId)).get("address");
@@ -160,7 +166,7 @@ public class DataProcessor implements CommandLineRunner {
                                                 newIn ++;
                                                 walker ++;
                                                 customer ++;
-                                                hour_customer ++;
+//                                                hour_customer ++;
                                                 hour_in_customer ++;
                                             }else {
                                                 //加入新人流量
@@ -183,15 +189,17 @@ public class DataProcessor implements CommandLineRunner {
                                                     customerMap.put("latest_in_time",latest_time);
                                                     customerMap.put("beat",latest_time);
                                                     customerMap.put("inJudge",1);
+                                                    customerMap.put("rssi",rssi);
                                                     customerMap.put("visited_times",(Integer)customerMap.get("visited_times")+1);
                                                     dataUtil.refreshCache(mac,customerMap);
 
                                                     customer ++;
                                                     walker ++;
-                                                    hour_customer ++;
+//                                                    hour_customer ++;
                                                     hour_in_customer ++;
                                                 }else{
                                                     customerMap.put("beat",latest_time);
+                                                    customerMap.put("rssi",rssi);
                                                     dataUtil.refreshCache(mac,customerMap);
                                                     walker ++;
                                                 }
@@ -202,7 +210,7 @@ public class DataProcessor implements CommandLineRunner {
                                                     //还没有访问过的
                                                     if ((Integer)customerMap.get("inJudge")==0){
                                                         customer ++;
-                                                        hour_customer ++;
+//                                                        hour_customer ++;
                                                         hour_in_customer ++;
                                                         //如果还没有进过店的,视为新客人
                                                         if ((Integer)customerMap.get("visited_times")==0)
@@ -215,6 +223,7 @@ public class DataProcessor implements CommandLineRunner {
                                                     customerMap.put("inJudge",1);
                                                     customerMap.put("latest_in_time",latest_time);
                                                     customerMap.put("beat",latest_time);
+                                                    customerMap.put("rssi",rssi);
                                                     dataUtil.refreshCache(mac,customerMap);
                                                 }else{
                                                     //客人已出去
@@ -228,6 +237,7 @@ public class DataProcessor implements CommandLineRunner {
                                                         customerMap.put("inJudge",0);
                                                     }
                                                     customerMap.put("beat",latest_time);
+                                                    customerMap.put("rssi",rssi);
                                                     dataUtil.refreshCache(mac,customerMap);
                                                 }
                                             }
@@ -236,8 +246,8 @@ public class DataProcessor implements CommandLineRunner {
                                         continue;
                                 }
                                 //这里更新
-                                if (customer!=0||newIn!=0||hour_in_customer!=0||walker!=0){
-                                    shop_dataMapper.updateShop_data(address,customer,newIn,hour_in_customer,walker);
+                                if (customer!=0||newIn!=0||hour_in_customer!=0||walker!=0||jumpOut!=0){
+                                    shop_dataMapper.updateShop_data(address,customer,newIn,hour_in_customer,walker,jumpOut);
                                 }
                                 customer = 0;
                                 newIn = 0;
@@ -261,6 +271,18 @@ public class DataProcessor implements CommandLineRunner {
         }
         System.out.println("退出while循环.................");
     }
+
+//        @Transactional
+//        @Async
+//        @Scheduled(cron = "0/5 * * * * ?")
+//    public void test(){
+//
+//            latest_time = new Timestamp(System.currentTimeMillis());
+//            System.out.println(latest_time);
+//        customerMapper.insertCustomer("68:c6:3a:85:3d:8h",-20,"肇庆店",latest_time,latest_time,latest_time,1,1);
+//        }
+
+
 
     //此进程用于存储跳出量、动态当前客流量和小时客流量
     @Transactional
@@ -327,12 +349,42 @@ public class DataProcessor implements CommandLineRunner {
             if (subCountExtraMap.get("dynamic_customer")>subHour_customer)
                 subHour_customer = subCountExtraMap.get("dynamic_customer");
             if (subHour_customer!=0||subCountExtraMap.get("dynamic_customer")!=0||subCountExtraMap.get("jumpOut_customer")!=0)
-//                System.out.println(subCountExtraMap.get("dynamic_customer"));
                 shop_dataMapper.updateDataThread(subAddress,subCountExtraMap.get("dynamic_customer"),subCountExtraMap.get("jumpOut_customer"),subHour_customer);
-
         }
+
+//        System.out.println(subCustomerMap);
     }
 
+    //此进程用于存储用户信息和补充跳出量
+    @Transactional
+    @Async
+    @Scheduled(cron = "0 0 0/1 * * ?")
+    public void saveDataThread(){
+
+        Map<String,Object> subCustomerMap = redisUtil.hmget("customer");
+
+        for (Map.Entry<String, Object> subCustomerMap_1:subCustomerMap.entrySet()) {
+            String subMac = subCustomerMap_1.getKey();
+            Map<String,Object> subCustomerMap_2 = dataUtil.getCustomerMap(subMac);
+            Timestamp first_in_time = new Timestamp((Long)subCustomerMap_2.get("first_in_time"));
+            Timestamp latest_in_time =  new Timestamp((Long)subCustomerMap_2.get("latest_in_time"));
+            Timestamp beat = new Timestamp((Long)subCustomerMap_2.get("beat"));
+            customerMapper.updateCustomer(subMac,(Integer)subCustomerMap_2.get("rssi"),first_in_time,latest_in_time,beat,(Integer)subCustomerMap_2.get("inJudge"),(Integer)subCustomerMap_2.get("visited_times"));
+        }
+        //删除缓存
+        redisUtil.del("customer");
+
+        //添加下一个小时的店铺时间
+        dataUtil.insertShop();
+
+
+        //补充遗漏的跳出量
+        List<String> extraJumpOutAddressList = customerMapper.searchExtraJumpOut();
+        customerMapper.updateInjudge();
+        for (String extraJumpOutAddress:extraJumpOutAddressList)
+            shop_dataMapper.updateExtraJumpOut(extraJumpOutAddress);
+
+    }
 
 
 }
