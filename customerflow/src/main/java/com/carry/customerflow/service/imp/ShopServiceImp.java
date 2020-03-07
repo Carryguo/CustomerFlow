@@ -28,6 +28,14 @@ public class ShopServiceImp implements ShopService {
         shopMapper.insertShop(username,longitude,latitude,address);
         Calendar c = Calendar.getInstance();
         int hours = c.get(Calendar.HOUR_OF_DAY);
+
+        if (shop_dataMapper.selectWithin1hourByAddress(address)==0)
         shop_dataMapper.insertShop(address,hours);
     }
+
+    @Override
+    public void deleteShop(String address) {
+        shopMapper.deleteShop(address);
+    }
+
 }

@@ -10,4 +10,5 @@ public interface MachineMapper {
     List<Machine> findMachineByAddress(@Param("username")String username,@Param("address")String address);
     void deleteMachineByMachineId(@Param("machineId")String machineId);
     List<Machine> findAllMachine();
+    void deleteMachineByAddress(@Param("address")String address);
 }

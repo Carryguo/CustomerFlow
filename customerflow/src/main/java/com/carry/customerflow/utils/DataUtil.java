@@ -1,9 +1,11 @@
 package com.carry.customerflow.utils;
 
 import com.carry.customerflow.bean.Customer;
+import com.carry.customerflow.bean.Machine;
 import com.carry.customerflow.mapper.ShopMapper;
 import com.carry.customerflow.mapper.Shop_dataMapper;
 import com.carry.customerflow.service.CustomerService;
+import com.carry.customerflow.service.MachineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +26,9 @@ public class DataUtil {
 
     @Autowired
     private ShopMapper shopMapper;
+
+    @Autowired
+    private MachineService machineService;
 
     private Map<String,Object> customerMap;
     private Map<String,Object> subCcustomerMap;
@@ -113,6 +118,22 @@ public class DataUtil {
     //更新缓存信息
     public void refreshCache(String mac,Map customerMap){
         redisUtil.hset("customer",mac,customerMap);
+    }
+
+    //设备缓存初始化
+    public void refreshMachineCache(){
+        List<Machine> machineList = machineService.findAllMachine();
+         Map<String,Object> machineMap = new HashMap<>();
+        for (Machine machine:machineList) {
+            Map<String,Object> subMachineMap = new HashMap<>();
+            subMachineMap.put("machineId",machine.getMachineId());
+            subMachineMap.put("address",machine.getAddress());
+            subMachineMap.put("status",machine.getStatus());
+            subMachineMap.put("rssi",machine.getRssi());
+            machineMap.put(machine.getMachineId(),subMachineMap);
+        }
+        redisUtil.del("machine");
+        redisUtil.hmset("machine",machineMap);
     }
 }
 

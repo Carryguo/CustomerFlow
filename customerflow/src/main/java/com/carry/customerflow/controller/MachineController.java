@@ -4,6 +4,7 @@ import com.carry.customerflow.bean.Machine;
 import com.carry.customerflow.bean.Msg;
 import com.carry.customerflow.bean.User;
 import com.carry.customerflow.service.MachineService;
+import com.carry.customerflow.utils.DataUtil;
 import com.carry.customerflow.utils.RedisUtil;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +27,18 @@ public class MachineController {
     //redis工具类
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private DataUtil dataUtil;
 
     private Integer rssiInt;
     /**
      * 插入设备信息
-     * @param username
      * @param machineId
      * @param address
      * @return
      */
     @PostMapping("/insertMachine")
-    public Msg insertMachine(@RequestParam("username")String username,@RequestParam("machineId")String machineId, @RequestParam("address")String address, @RequestParam("rssi")String rssi){
+    public Msg insertMachine(@RequestParam("machineId")String machineId, @RequestParam("address")String address, @RequestParam("rssi")String rssi){
         try {
             rssiInt = Integer.parseInt(rssi);
             //限定rssi的格式
@@ -63,7 +65,8 @@ public class MachineController {
             redisUtil.hmset("machine",machineMap);
 //            System.out.println(redisUtil.hmget("machine"));
             //这个地方到时候要从Session中获取用户名放进去
-            machineService.insertMachine(username,machineId, address,rssiInt,"离线");
+            User user = (User)SecurityUtils.getSubject().getPrincipal();
+            machineService.insertMachine(user.getUsername(),machineId, address,rssiInt,"离线");
         }catch (NumberFormatException e){
             return Msg.failure().setCode(405).setMessage("rssi请设置负数");
         } catch (DuplicateKeyException e){
@@ -99,6 +102,8 @@ public class MachineController {
     public Msg deleteMachineByMachineId(@RequestParam("machineId")String machineId){
         try{
             machineService.deleteMachineByMachineId(machineId);
+            //初始化设备缓存
+            dataUtil.refreshMachineCache();
         }catch (Exception e){
             e.printStackTrace();
             return Msg.failure().setCode(401).setMessage("设备删除失败");

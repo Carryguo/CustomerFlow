@@ -17,4 +17,7 @@
     select address from shop
   </select>
 
+  <delete id="deleteShop">
+    delete from shop where address = #{address}
+  </delete>
 </mapper>

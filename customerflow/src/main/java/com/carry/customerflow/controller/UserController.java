@@ -2,7 +2,10 @@ package com.carry.customerflow.controller;
 
 import com.carry.customerflow.bean.Msg;
 import com.carry.customerflow.bean.User;
+import com.carry.customerflow.mapper.UserMapper;
 import com.carry.customerflow.realm.AuthRealm;
+import com.carry.customerflow.service.UserService;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -20,6 +23,10 @@ public class UserController {
 
     @Autowired
     private AuthRealm authRealm;
+
+    @Autowired
+    private UserMapper userMapper;
+
     @RequestMapping("/login")
     public Msg login(){
         return Msg.failure().setCode(444).setMessage("未登录");
@@ -88,6 +95,7 @@ public class UserController {
             subject.login(token);
             sessionId = (String) subject.getSession().getId();
             user = (User)SecurityUtils.getSubject().getPrincipal();
+//            System.out.println(user);
         }catch (AuthenticationException e){
             e.printStackTrace();
             return Msg.failure("账号或密码错误");
@@ -98,6 +106,12 @@ public class UserController {
         Map<String,String> map = new HashMap<>();
         map.put("token",sessionId);
         map.put("uid",user.getUid());
+        map.put("address",user.getAddress());
         return Msg.success().setData(map);
+    }
+
+    @GetMapping("/userTest")
+    public void userTest(@Param("username")String username){
+        System.out.println(userMapper.findByUsernameTest(username));
     }
 }

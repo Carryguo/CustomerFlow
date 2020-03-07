@@ -10,4 +10,5 @@ public interface MachineService {
     List<Machine> findMachineByAddress(String username, String address);
     void deleteMachineByMachineId(String machineId);
     List<Machine> findAllMachine();
+    void deleteMachineByAddress(String address);
 }

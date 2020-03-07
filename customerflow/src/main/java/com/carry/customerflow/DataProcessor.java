@@ -36,8 +36,8 @@ public class DataProcessor implements CommandLineRunner {
     private JSONArray jsonArray = null;
 
     //machineMap
-    private Map<String,Object> machineMap;
-    private Map<String,Object> subMachineMap;
+//    private Map<String,Object> machineMap;
+//    private Map<String,Object> subMachineMap;
 
     //正则表达式筛选数据
     private String macM = "([a-f0-9A-F]{2}:){5}[a-f0-9A-F]{2}";
@@ -101,18 +101,19 @@ public class DataProcessor implements CommandLineRunner {
             buf = new byte[1024];
             dp = new DatagramPacket(buf, buf.length);
             //系统启动时把machineId导入到redis缓存
-            List<Machine> machineList = machineService.findAllMachine();
-                machineMap = new HashMap<>();
-            for (Machine machine:machineList) {
-                subMachineMap = new HashMap<>();
-                subMachineMap.put("machineId",machine.getMachineId());
-                subMachineMap.put("address",machine.getAddress());
-                subMachineMap.put("status",machine.getStatus());
-                subMachineMap.put("rssi",machine.getRssi());
-                machineMap.put(machine.getMachineId(),subMachineMap);
-            }
-            redisUtil.del("machine");
-            redisUtil.hmset("machine",machineMap);
+//            List<Machine> machineList = machineService.findAllMachine();
+//                machineMap = new HashMap<>();
+//            for (Machine machine:machineList) {
+//                subMachineMap = new HashMap<>();
+//                subMachineMap.put("machineId",machine.getMachineId());
+//                subMachineMap.put("address",machine.getAddress());
+//                subMachineMap.put("status",machine.getStatus());
+//                subMachineMap.put("rssi",machine.getRssi());
+//                machineMap.put(machine.getMachineId(),subMachineMap);
+//            }
+//            redisUtil.del("machine");
+//            redisUtil.hmset("machine",machineMap);
+            dataUtil.refreshMachineCache();
 
             //初始化shop_data
             dataUtil.initShop_data();

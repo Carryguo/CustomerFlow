@@ -27,7 +27,7 @@ public class RegisterController {
         try{
         List<Shop>  shopList = registerService.findAddressByUsername(username);
         if (shopList.size()==0){
-            return Msg.failure("该店主还没有添加任何店铺,或者该店主还没有注册");
+            return Msg.failure("该店主还没有添加任何店铺,或者该店主还没有注册").setCode(401);
         }
         List<String> shopAddressList = new ArrayList<>();
         for (Shop shop:shopList) {
@@ -38,7 +38,7 @@ public class RegisterController {
             return Msg.success(shopMap);
     }catch (Exception e){
             e.printStackTrace();
-            return Msg.failure("查询店铺失败");
+            return Msg.failure("查询店铺失败").setCode(402);
         }
     }
 

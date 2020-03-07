@@ -5,6 +5,22 @@
     select count(*) from shop_data where update_time>=(NOW() - interval 1 hour)
   </select>
 
+    <select id="selectWithin1hourByAddress" resultType="java.lang.Integer" >
+    select count(*) from shop_data where address = #{address} and update_time>=(NOW() - interval 1 hour)
+  </select>
+
+    <select id="getCustomerPerHour" resultType="com.carry.customerflow.bean.CustomerPerHour" >
+    select hour_customer_number,hours from shop_data where address = #{address} and  ( datediff ( update_time , #{dateTime} ) = 0 ) order by update_time desc
+  </select>
+
+    <select id="getInCustomerPerHour" resultType="com.carry.customerflow.bean.InCustomerPerHour" >
+    select hour_in_customer_number,hours from shop_data where address = #{address} and  ( datediff ( update_time , #{dateTime} ) = 0 ) order by update_time desc
+  </select>
+
+    <select id="getMainData" resultType="com.carry.customerflow.bean.Shop_data" >
+    select * from shop_data where address = #{address} and  ( datediff ( update_time , #{dateTime} ) = 0 ) order by update_time desc
+  </select>
+
     <insert id="insertShop">
         insert into shop_data
         (address,walker_number,customer_number,new_customer,jump_out,dynamic_customer,hour_customer_number,hour_in_customer_number,update_time,hours)
@@ -51,5 +67,6 @@
       WHERE
       id in (select id from (select * from shop_data where address=#{address} ORDER BY update_time desc LIMIT 1)as t)
     </update>
+
 
 </mapper>

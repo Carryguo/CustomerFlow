@@ -20,11 +20,11 @@ public class Shop_data {
     /**
      * consumer_number 客流量
      */
-    private Integer consumer_number;
+    private Integer customer_number;
     /**
      * new_consumer 新客人
      */
-    private Integer new_consumer;
+    private Integer new_customer;
     /**
      * jump_out 跳出量
      */
@@ -32,15 +32,15 @@ public class Shop_data {
     /**
      * dynamic_consumer 目前还在店里的人量
      */
-    private Integer dynamic_consumer;
+    private Integer dynamic_customer;
     /**
      * hour_consumer_number 小时客流量
      */
-    private Integer hour_consumer_number;
+    private Integer hour_customer_number;
     /**
      * hour_in_consumer_number 小时进店客流量
      */
-    private Integer hour_in_consumer_number;
+    private Integer hour_in_customer_number;
     /**
      * 刷新时间
      */

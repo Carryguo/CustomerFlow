@@ -31,4 +31,9 @@ public class MachineServiceImp implements MachineService {
     public List<Machine> findAllMachine() {
         return machineMapper.findAllMachine();
     }
+
+    @Override
+    public void deleteMachineByAddress(String address) {
+        machineMapper.deleteMachineByAddress(address);
+    }
 }

@@ -19,4 +19,8 @@
     <select id="findAllMachine" resultType="com.carry.customerflow.bean.Machine" >
     select * from machine
   </select>
+
+    <delete id="deleteMachineByAddress">
+        delete from machine where address = #{address}
+    </delete>
 </mapper>
