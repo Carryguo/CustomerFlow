@@ -1,6 +1,9 @@
 package com.carry.customerflow.bean;
 
 import lombok.Data;
+
+import java.sql.Timestamp;
+
 @Data
 public class Machine {
     /**
@@ -27,4 +30,12 @@ public class Machine {
      * rssi 设备信号强度
      */
     private Integer rssi;
+    /**
+     * leastRssi 最小限制Rssi
+     */
+    private Integer leastRssi;
+    /**
+    * beat 更新时间
+    */
+    private Timestamp beat;
 }

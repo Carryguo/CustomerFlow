@@ -22,4 +22,5 @@ public interface Shop_dataMapper {
     List<Shop_data> getMainData(@Param("address")String address,@Param("dateTime")String dateTime);
     List<CustomerPerHour> getCustomerPerHour(@Param("address")String address,@Param("dateTime")String dateTime);
     List<InCustomerPerHour> getInCustomerPerHour(@Param("address")String address,@Param("dateTime")String dateTime);
+    Integer showDynamicCustomer(@Param("address")String address);
 }

@@ -140,6 +140,8 @@ public class DataProcessor implements CommandLineRunner {
                             //如果设备没有被添加,则不接受处理
 //                            System.out.println(redisUtil.hmget("machine"));
                             if (machineId.matches(idM)&&redisUtil.hget("machine",machineId)!=null){
+                                //更新设备beat;
+                                dataUtil.refreshMachineCacheBeat(machineId);
 //                                System.out.println("进来进行处理");
                             //分析各个mac的数据
                                 dataSize = jsonArray.size();
@@ -149,7 +151,8 @@ public class DataProcessor implements CommandLineRunner {
                                     rssi = jsonObjectData.getInteger("rssi");
 //                                    System.out.println("rssi的值:"+rssi);
                                     //筛选
-                                    if (mac != null && mac.matches(macM) && rssi != null && rssi.toString().matches(rssiM)&&!mac.startsWith("00:00")){
+                                    if (mac != null && mac.matches(macM) && rssi != null && rssi.toString().matches(rssiM)&&!mac.startsWith("00:00")&&rssi>(Integer)((Map)redisUtil.hget("machine",machineId)).get("leastRssi")){
+//                                        System.out.println("进来了");
                                         //当前时间戳
                                         latest_time = new Timestamp(System.currentTimeMillis());
 //                                        System.out.println("DataProcessor的latest_time:"+latest_time);
@@ -301,8 +304,6 @@ public class DataProcessor implements CommandLineRunner {
 
         Map<String,Object> countExtraMap = new HashMap<>();
         Map<String,Integer> subCountExtraMap;
-
-
         Map<String,Object> subCustomerMap = redisUtil.hmget("customer");
 //        System.out.println(subCustomerMap);
         latest_time = new Timestamp(System.currentTimeMillis());
@@ -339,6 +340,8 @@ public class DataProcessor implements CommandLineRunner {
             jumpOut_customer = 0;
             dynamic_customer = 0;
             dataUtil.refreshCache(subMac,subCustomerMap_2);
+
+
         }
 
             //存库
@@ -347,13 +350,25 @@ public class DataProcessor implements CommandLineRunner {
             subCountExtraMap = (Map)subCustomerMap_1.getValue();
             //查询当前小时进店量
             subHour_customer = shop_dataMapper.searchNowHour_in_customer_number(subAddress);
+            //如果当前店面人流量大于小时进店量, 则小时客流量等于当前店面人流量
             if (subCountExtraMap.get("dynamic_customer")>subHour_customer)
                 subHour_customer = subCountExtraMap.get("dynamic_customer");
             if (subHour_customer!=0||subCountExtraMap.get("dynamic_customer")!=0||subCountExtraMap.get("jumpOut_customer")!=0)
                 shop_dataMapper.updateDataThread(subAddress,subCountExtraMap.get("dynamic_customer"),subCountExtraMap.get("jumpOut_customer"),subHour_customer);
         }
 
-//        System.out.println(subCustomerMap);
+       //遍历更新设备状态
+        Map<String,Object> machineMap = redisUtil.hmget("machine");
+        for (Map.Entry<String, Object> subMachineMap:machineMap.entrySet()) {
+            String subMachineId = subMachineMap.getKey();
+            Map<String,Object> subMachineMap_1 = (Map)subMachineMap.getValue();
+            Integer machineCountTime = new Long((latest_time.getTime() - (Long)subMachineMap_1.get("beat")) / (60*1000)).intValue();
+            if (machineCountTime>15)
+                subMachineMap_1.put("status","离线");
+            else
+                subMachineMap_1.put("status","在线");
+            redisUtil.hset("machine",subMachineId,subMachineMap_1);
+        }
     }
 
     //此进程用于存储用户信息和补充跳出量

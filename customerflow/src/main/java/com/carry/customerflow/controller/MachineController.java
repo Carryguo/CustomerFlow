@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class MachineController {
     private DataUtil dataUtil;
 
     private Integer rssiInt;
+    private Integer leastRssiInt;
     /**
      * 插入设备信息
      * @param machineId
@@ -38,41 +40,44 @@ public class MachineController {
      * @return
      */
     @PostMapping("/insertMachine")
-    public Msg insertMachine(@RequestParam("machineId")String machineId, @RequestParam("address")String address, @RequestParam("rssi")String rssi){
+    public Msg insertMachine(@RequestParam("machineId")String machineId, @RequestParam("address")String address, @RequestParam("rssi")String rssi,@RequestParam("leastRssi")String leastRssi){
         try {
             rssiInt = Integer.parseInt(rssi);
+            leastRssiInt = Integer.parseInt(leastRssi);
             //限定rssi的格式
-            if (!rssi.matches("-[1-9]\\d*")){
-                return Msg.failure().setCode(402).setMessage("rssi只能设置负数");
-            }else if (rssiInt<-100)
+            if (!leastRssi.matches("-[1-9]\\d*")||!rssi.matches("-[1-9]\\d*")){
+                return Msg.failure().setCode(402).setMessage("rssi和最小限制leastRssi只能设置负数");
+            }else if (rssiInt==0||leastRssiInt==0)
             {
-                return Msg.failure().setCode(403).setMessage("rssi设置不能小于-100");
-            }else if (rssiInt==0)
-            {
-                return Msg.failure().setCode(404).setMessage("rssi设置不能等于0");
+                return Msg.failure().setCode(403).setMessage("rssi和最小限制leastRssi设置不能等于0");
+            }else if (leastRssiInt>rssiInt){
+                return Msg.failure().setCode(405).setMessage("rssi不能小于最小限制leastRssi");
             }
             //如果用户没有设置,则默认-50
-            if (rssiInt==0){
-                rssiInt=-50;
-            }
+//            if (rssiInt==0){
+//                rssiInt=-50;
+//            }
+
             subMachineMap = new HashMap<>();
             subMachineMap.put("machineId",machineId);
             subMachineMap.put("address",address);
             subMachineMap.put("rssi",rssiInt);
             subMachineMap.put("status","离线");
+            subMachineMap.put("leastRssi",leastRssiInt);
+            subMachineMap.put("beat",new Timestamp(System.currentTimeMillis()));
             machineMap = new HashMap<>();
             machineMap.put(machineId,subMachineMap);
             redisUtil.hmset("machine",machineMap);
 //            System.out.println(redisUtil.hmget("machine"));
             //这个地方到时候要从Session中获取用户名放进去
             User user = (User)SecurityUtils.getSubject().getPrincipal();
-            machineService.insertMachine(user.getUsername(),machineId, address,rssiInt,"离线");
+            machineService.insertMachine(user.getUsername(),machineId, address,rssiInt,leastRssiInt,"离线");
         }catch (NumberFormatException e){
-            return Msg.failure().setCode(405).setMessage("rssi请设置负数");
+            return Msg.failure().setCode(405).setMessage("rssi和最小限制leastRssi请设置负数");
         } catch (DuplicateKeyException e){
             return Msg.failure().setCode(401).setMessage("设备已被添加,请不要重复添加");
         }
-        return Msg.success().setMessage("设备添加成功");
+        return Msg.success().setMessage("添加设备成功");
     }
 
     /**
@@ -85,6 +90,13 @@ public class MachineController {
         //这个地方到时候要从Session中获取用户名放进去
         try{
             User user = (User)SecurityUtils.getSubject().getPrincipal();
+
+            Map<String,Object> machineMap = redisUtil.hmget("machine");
+            for (Map.Entry<String, Object> subMachineMap:machineMap.entrySet()) {
+                String subMachineId = subMachineMap.getKey();
+                Map<String,Object> subMachineMap_1 = (Map)subMachineMap.getValue();
+                machineService.updateMachine(subMachineId,(String)subMachineMap_1.get("status"));
+            }
             List<Machine> machineList = machineService.findMachineByAddress(user.getUsername(),address);
             return Msg.success(machineList).setMessage("返回信息成功");
         }catch (Exception e){

@@ -21,6 +21,10 @@
     select * from shop_data where address = #{address} and  ( datediff ( update_time , #{dateTime} ) = 0 ) order by update_time desc
   </select>
 
+    <select id="showDynamicCustomer" resultType="java.lang.Integer" >
+    select dynamic_customer from shop_data where id in (select id from (select * from shop_data where address=#{address} ORDER BY update_time desc LIMIT 1)as t)
+  </select>
+
     <insert id="insertShop">
         insert into shop_data
         (address,walker_number,customer_number,new_customer,jump_out,dynamic_customer,hour_customer_number,hour_in_customer_number,update_time,hours)

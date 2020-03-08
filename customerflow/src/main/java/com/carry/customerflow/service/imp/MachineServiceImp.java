@@ -13,8 +13,8 @@ public class MachineServiceImp implements MachineService {
     @Resource
     private MachineMapper machineMapper;
     @Override
-    public void insertMachine(String username,String machineId, String address,Integer rssi,String status) {
-        machineMapper.insertMachine(username,machineId,address,rssi,status);
+    public void insertMachine(String username,String machineId, String address,Integer rssi,Integer leastRssi,String status) {
+        machineMapper.insertMachine(username,machineId,address,rssi,leastRssi,status);
     }
 
     @Override
@@ -35,5 +35,10 @@ public class MachineServiceImp implements MachineService {
     @Override
     public void deleteMachineByAddress(String address) {
         machineMapper.deleteMachineByAddress(address);
+    }
+
+    @Override
+    public void updateMachine(String machineId, String status) {
+        machineMapper.updateMachine(machineId,status);
     }
 }

@@ -42,6 +42,7 @@ public class RegisterController {
         }
     }
 
+
     /**
      * 注册
      * @param uid
@@ -52,14 +53,18 @@ public class RegisterController {
      */
     @PostMapping("/register")
     public Msg register(@RequestParam("uid")String uid,@RequestParam("username")String username,@RequestParam("password")String password,@RequestParam("address")String address){
-        if ("3".equals(uid)&&"".equals(address)){
-            return Msg.failure().setCode(401).setMessage("注册店员身份要查询店主的店铺,并且选择店铺进行绑定");
-        }try{
-        registerService.insertUser(uid,username,password,address);
+       try{
+           if ("3".equals(uid)&&"".equals(address)){
+               return Msg.failure().setCode(401).setMessage("注册店员身份要查询店主的店铺,并且选择店铺进行绑定");
+           }
+           registerService.insertUser(uid,username,password,address);
         }catch (DuplicateKeyException e){
            return Msg.failure().setCode(402).setMessage("你所注册的用户名已经存在");
-        }
-        return Msg.success("插入用户成功");
+        }catch (Exception e)
+       {
+           return Msg.failure().setCode(403).setMessage("注册失败，请与管理员联系");
+       }
+        return Msg.success("注册用户成功");
     }
 }
 

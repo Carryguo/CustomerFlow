@@ -98,7 +98,7 @@ public class UserController {
 //            System.out.println(user);
         }catch (AuthenticationException e){
             e.printStackTrace();
-            return Msg.failure("账号或密码错误");
+            return Msg.failure("账号或密码错误").setCode(401);
         }catch (AuthorizationException e){
             e.printStackTrace();
             return Msg.failure("没有权限");

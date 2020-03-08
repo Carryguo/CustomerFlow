@@ -99,6 +99,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/test","roles[boss,admin]");
         filterChainDefinitionMap.put("/test","roles[boss,staff]");
         filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,admin]");
+        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,staff]");
         //开发完再把限权打开
         filterChainDefinitionMap.put("/**","anon");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);

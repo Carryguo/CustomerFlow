@@ -3,6 +3,7 @@ package com.carry.customerflow.controller;
 import com.carry.customerflow.bean.Msg;
 import com.carry.customerflow.bean.Shop;
 import com.carry.customerflow.bean.User;
+import com.carry.customerflow.mapper.Shop_dataMapper;
 import com.carry.customerflow.service.MachineService;
 import com.carry.customerflow.service.ShopService;
 import com.carry.customerflow.utils.DataUtil;
@@ -20,6 +21,9 @@ public class ShopController
     private ShopService shopService;
 
     @Autowired
+    private Shop_dataMapper shop_dataMapper;
+
+    @Autowired
     private MachineService machineService;
 
     @Autowired
@@ -29,12 +33,14 @@ public class ShopController
      * 根据店主的名字返回店铺
      * @return
      */
-    @GetMapping("/findShopByUsername")
+    @GetMapping("/findShop")
     public Msg findShopByUsername(){
         //这个地方到时候要从Session中获取用户名放进去
         try{
             User user = (User)SecurityUtils.getSubject().getPrincipal();
             List<Shop> shopList = shopService.findShopByUsername(user.getUsername());
+            if (shopList.size()==0)
+                return Msg.failure().setCode(402).setMessage("店主没有添加店铺，请到地图界面添加店铺");
             return Msg.success(shopList).setMessage("返回店铺成功");
         }catch (Exception e){
             e.printStackTrace();
@@ -87,5 +93,17 @@ public class ShopController
             return Msg.failure().setCode(401).setMessage("删除失败");
         }
         return Msg.success().setMessage("删除成功");
+    }
+
+    @GetMapping("/showDynamicCustomer")
+    public Msg showDynamicCustomer(@RequestParam("address")String address)
+    {
+        try
+        {
+            return Msg.success(shop_dataMapper.showDynamicCustomer(address));
+        }catch (Exception e)
+        {
+            return Msg.failure().setCode(401).setMessage("返回数据失败");
+        }
     }
 }

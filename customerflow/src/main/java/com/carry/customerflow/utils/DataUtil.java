@@ -130,10 +130,18 @@ public class DataUtil {
             subMachineMap.put("address",machine.getAddress());
             subMachineMap.put("status",machine.getStatus());
             subMachineMap.put("rssi",machine.getRssi());
+            subMachineMap.put("leastRssi",machine.getLeastRssi());
+            subMachineMap.put("beat",machine.getBeat());
             machineMap.put(machine.getMachineId(),subMachineMap);
         }
         redisUtil.del("machine");
         redisUtil.hmset("machine",machineMap);
+    }
+
+    public void refreshMachineCacheBeat(String machineId){
+        Map<String,Object> subMachineMap = (Map)redisUtil.hget("machine",machineId);
+        subMachineMap.put("beat",new Timestamp(System.currentTimeMillis()));
+        redisUtil.hset("machine",machineId,subMachineMap);
     }
 }
 
