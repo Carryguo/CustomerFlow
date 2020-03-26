@@ -31,8 +31,6 @@ public class MachineController {
     @Autowired
     private DataUtil dataUtil;
 
-    private Integer rssiInt;
-    private Integer leastRssiInt;
     /**
      * 插入设备信息
      * @param machineId
@@ -42,8 +40,8 @@ public class MachineController {
     @PostMapping("/insertMachine")
     public Msg insertMachine(@RequestParam("machineId")String machineId, @RequestParam("address")String address, @RequestParam("rssi")String rssi,@RequestParam("leastRssi")String leastRssi){
         try {
-            rssiInt = Integer.parseInt(rssi);
-            leastRssiInt = Integer.parseInt(leastRssi);
+            Integer  rssiInt = Integer.parseInt(rssi);
+            Integer  leastRssiInt = Integer.parseInt(leastRssi);
             //限定rssi的格式
             if (!leastRssi.matches("-[1-9]\\d*")||!rssi.matches("-[1-9]\\d*")){
                 return Msg.failure().setCode(402).setMessage("rssi和最小限制leastRssi只能设置负数");
@@ -86,10 +84,10 @@ public class MachineController {
      * @return
      */
     @GetMapping("/findMachineByAddress")
-    public Msg findMachineByAddress( @RequestParam("address")String address){
+    public Msg findMachineByAddress( @RequestParam("username")String username,@RequestParam("address")String address){
         //这个地方到时候要从Session中获取用户名放进去
         try{
-            User user = (User)SecurityUtils.getSubject().getPrincipal();
+//            User user = (User)SecurityUtils.getSubject().getPrincipal();
 
             Map<String,Object> machineMap = redisUtil.hmget("machine");
             for (Map.Entry<String, Object> subMachineMap:machineMap.entrySet()) {
@@ -97,7 +95,7 @@ public class MachineController {
                 Map<String,Object> subMachineMap_1 = (Map)subMachineMap.getValue();
                 machineService.updateMachine(subMachineId,(String)subMachineMap_1.get("status"));
             }
-            List<Machine> machineList = machineService.findMachineByAddress(user.getUsername(),address);
+            List<Machine> machineList = machineService.findMachineByAddress(username,address);
             return Msg.success(machineList).setMessage("返回信息成功");
         }catch (Exception e){
             e.printStackTrace();
@@ -121,5 +119,36 @@ public class MachineController {
             return Msg.failure().setCode(401).setMessage("设备删除失败");
         }
         return Msg.success().setMessage("成功删除设备");
+    }
+
+    @PostMapping("/editMachine")
+    public Msg editMachine(@RequestParam("machineId")String machineId,@RequestParam("rssi")String rssi,@RequestParam("leastRssi")String leastRssi){
+        try{
+            Integer rssiInt = Integer.parseInt(rssi);
+            Integer leastRssiInt = Integer.parseInt(leastRssi);
+            //限定rssi的格式
+            if (!leastRssi.matches("-[1-9]\\d*")||!rssi.matches("-[1-9]\\d*")){
+                return Msg.failure().setCode(402).setMessage("rssi和最小限制leastRssi只能设置负数");
+            }else if (rssiInt==0||leastRssiInt==0)
+            {
+                return Msg.failure().setCode(403).setMessage("rssi和最小限制leastRssi设置不能等于0");
+            }else if (leastRssiInt>rssiInt){
+                return Msg.failure().setCode(405).setMessage("rssi不能小于最小限制leastRssi");
+            }
+            //修改缓存信息
+            Map<String,Object> subMachineMap = (Map)redisUtil.hget("machine",machineId);
+            subMachineMap.put("rssi",rssiInt);
+            subMachineMap.put("leastRssi",leastRssiInt);
+            redisUtil.hset("machine",machineId,subMachineMap);
+            Integer num = machineService.editMachine(machineId,rssiInt,leastRssiInt);
+            if (num==0){
+                Msg.failure().setCode(401).setMessage("设备编辑失败");
+            }
+            return Msg.success().setMessage("编辑成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("设备编辑失败");
+        }
+
     }
 }

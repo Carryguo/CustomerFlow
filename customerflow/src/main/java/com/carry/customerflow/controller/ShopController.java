@@ -29,6 +29,26 @@ public class ShopController
     @Autowired
     private DataUtil dataUtil;
 
+
+    /**
+     * 不要下权限，只认证登录
+     * @param username
+     * @return
+     */
+    @GetMapping("/findShopByBName")
+    public Msg findShopByBossName(@RequestParam("username")String username){
+        try{
+            List<Shop> shopList = findShop(username);
+            if (shopList.size()==0)
+                return Msg.failure().setCode(402).setMessage("店主没有添加店铺，请到地图界面添加店铺");
+            return Msg.success(shopList).setMessage("返回店铺成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("返回商店失败");
+        }
+    }
+
+
     /**
      * 根据店主的名字返回店铺
      * @return
@@ -38,7 +58,7 @@ public class ShopController
         //这个地方到时候要从Session中获取用户名放进去
         try{
             User user = (User)SecurityUtils.getSubject().getPrincipal();
-            List<Shop> shopList = shopService.findShopByUsername(user.getUsername());
+            List<Shop> shopList = findShop(user.getUsername());
             if (shopList.size()==0)
                 return Msg.failure().setCode(402).setMessage("店主没有添加店铺，请到地图界面添加店铺");
             return Msg.success(shopList).setMessage("返回店铺成功");
@@ -46,6 +66,10 @@ public class ShopController
             e.printStackTrace();
             return Msg.failure().setCode(401).setMessage("返回商店失败");
         }
+    }
+
+    private List<Shop> findShop(String username){
+        return shopService.findShopByUsername(username);
     }
 
 

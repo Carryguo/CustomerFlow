@@ -39,4 +39,9 @@
     where u.username = #{username}
     </select>
 
+    <select id="searchAllBoss" resultType="com.carry.customerflow.bean.User">
+    select *
+    from user
+    where uid = 2
+    </select>
 </mapper>

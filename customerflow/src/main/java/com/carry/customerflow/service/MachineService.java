@@ -12,4 +12,5 @@ public interface MachineService {
     List<Machine> findAllMachine();
     void deleteMachineByAddress(String address);
     void updateMachine(String machineId,String status);
+    Integer editMachine(String machineId,Integer rssi, Integer leastRssi);
 }

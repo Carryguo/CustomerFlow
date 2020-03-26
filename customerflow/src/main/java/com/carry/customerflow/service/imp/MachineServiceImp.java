@@ -41,4 +41,9 @@ public class MachineServiceImp implements MachineService {
     public void updateMachine(String machineId, String status) {
         machineMapper.updateMachine(machineId,status);
     }
+
+    @Override
+    public Integer editMachine(String machineId, Integer rssi, Integer leastRssi) {
+        return machineMapper.editMachine(machineId,rssi,leastRssi);
+    }
 }

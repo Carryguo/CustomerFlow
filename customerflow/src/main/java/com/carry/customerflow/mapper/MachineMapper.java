@@ -12,4 +12,5 @@ public interface MachineMapper {
     void deleteMachineByMachineId(@Param("machineId")String machineId);
     List<Machine> findAllMachine();
     void deleteMachineByAddress(@Param("address")String address);
+    Integer editMachine(@Param("machineId")String machineId,@Param("rssi")Integer rssi,@Param("leastRssi")Integer leastRssi);
 }

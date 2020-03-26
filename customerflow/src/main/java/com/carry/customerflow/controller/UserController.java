@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -64,15 +65,20 @@ public class UserController {
         return "/index";
     }
 
-    @RequestMapping("/logout")
-    public String logout(){
-        //移除这个session
-        Subject subject = SecurityUtils.getSubject();
-        if (subject != null)
-        {
-            subject.logout();
+
+    @GetMapping("/logout")
+    public Msg logout(){
+        try {
+            //移除这个session
+            Subject subject = SecurityUtils.getSubject();
+            if (subject != null) {
+                subject.logout();
+            }
+            return Msg.success().setMessage("退出成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("退出失败");
         }
-        return "/logout";
     }
 
     @RequestMapping("/admin")
@@ -113,5 +119,16 @@ public class UserController {
     @GetMapping("/userTest")
     public void userTest(@Param("username")String username){
         System.out.println(userMapper.findByUsernameTest(username));
+    }
+
+    @GetMapping("/searchAllBoss")
+    public Msg searchAllBoss(){
+        try{
+            List<User> userList = userMapper.searchAllBoss();
+            return Msg.success(userList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("返回店主失败");
+        }
     }
 }

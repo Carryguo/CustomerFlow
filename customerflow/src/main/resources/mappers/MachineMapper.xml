@@ -32,4 +32,13 @@
         where
         machineId = #{machineId}
     </update>
+
+    <update id="editMachine">
+        update
+        machine
+        set
+        rssi = #{rssi},leastRssi = #{leastRssi}
+        where
+        machineId = #{machineId}
+    </update>
 </mapper>
