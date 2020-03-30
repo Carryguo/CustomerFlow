@@ -33,9 +33,14 @@
 
     <insert id="insertUser">
     insert into user
-    (uid,username,password,address)
+    (uid,username,password,address,bossname)
     values
-    (#{uid},#{username},#{password},#{address})
+    (#{uid},#{username},#{password},#{address},#{bossname})
     </insert>
 
+    <select id="checkExist" resultType="java.lang.Integer">
+    select count(*)
+    from user
+    where username = #{username}
+    </select>
 </mapper>

@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface RegisterMapper {
     List<Shop> findAddressByUsername(@Param("username") String username);
-    void insertUser(@Param("uid")String uid,@Param("username") String username,@Param("password")String password,@Param("address")String address);
+    void insertUser(@Param("uid")String uid,@Param("username") String username,@Param("password")String password,@Param("address")String address,@Param("bossname")String bossname);
+    Integer checkExist(@Param("username")String username);
 }

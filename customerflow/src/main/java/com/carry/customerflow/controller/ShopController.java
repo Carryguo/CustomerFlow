@@ -32,33 +32,56 @@ public class ShopController
 
     /**
      * 不要下权限，只认证登录
+     * 店员也能用
      * @param username
      * @return
      */
     @GetMapping("/findShopByBName")
     public Msg findShopByBossName(@RequestParam("username")String username){
+        return findShop(username);
+    }
+
+    /**
+     * 修改绑定的店铺
+     * @param username
+     * @param address
+     * @return
+     */
+    @PostMapping("/changeBondShop")
+    public Msg changeBondShop(@RequestParam("username")String username,@RequestParam("address")String address){
         try{
-            List<Shop> shopList = findShop(username);
-            if (shopList.size()==0)
-                return Msg.failure().setCode(402).setMessage("店主没有添加店铺，请到地图界面添加店铺");
-            return Msg.success(shopList).setMessage("返回店铺成功");
+            shopService.changeBondShop(username,address);
+            return Msg.success().setMessage("绑定成功");
         }catch (Exception e){
             e.printStackTrace();
-            return Msg.failure().setCode(401).setMessage("返回商店失败");
+            return Msg.failure().setCode(401).setMessage("服务器错误");
         }
     }
 
+    /**
+     * 店员权限专用
+     * @param username
+     * @return
+     */
+    @GetMapping("/findShopByBNameOnlyStaff")
+    public Msg findShopByBNameOnlyStaff(@RequestParam("username")String username){
+        return findShop(username);
+    }
 
     /**
      * 根据店主的名字返回店铺
      * @return
      */
     @GetMapping("/findShop")
-    public Msg findShopByUsername(){
+    public Msg findShopByUsername(@RequestParam("username")String username){
         //这个地方到时候要从Session中获取用户名放进去
+//        User user = (User)SecurityUtils.getSubject().getPrincipal();
+        return findShop(username);
+    }
+
+    private Msg findShop(String username){
         try{
-            User user = (User)SecurityUtils.getSubject().getPrincipal();
-            List<Shop> shopList = findShop(user.getUsername());
+            List<Shop> shopList = shopService.findShopByUsername(username);
             if (shopList.size()==0)
                 return Msg.failure().setCode(402).setMessage("店主没有添加店铺，请到地图界面添加店铺");
             return Msg.success(shopList).setMessage("返回店铺成功");
@@ -68,25 +91,38 @@ public class ShopController
         }
     }
 
-    private List<Shop> findShop(String username){
-        return shopService.findShopByUsername(username);
+    /**
+     * 检查店铺是否存在
+     * @param address
+     * @return
+     */
+    @GetMapping("/checkShop")
+    public Msg checkShop(@RequestParam("address")String address){
+        try{
+            if (shopService.checkShop(address)==0)
+                return Msg.failure().setCode(402).setMessage("绑定的"+address+"店铺已经被删除，请重新绑定");
+            return Msg.success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("服务器错误");
+        }
     }
-
 
     /**
      * 添加店铺
+     * @param username
      * @param longitude
      * @param latitude
      * @param address
      * @return
      */
     @PostMapping("/insertShop")
-    public Msg insertShop(@RequestParam("longitude")String longitude,@RequestParam("latitude")String latitude,@RequestParam("address")String address)
+    public Msg insertShop(@RequestParam("username")String username,@RequestParam("longitude")String longitude,@RequestParam("latitude")String latitude,@RequestParam("address")String address)
     {
         //这个地方到时候要从Session中获取用户名放进去
         try{
-            User user = (User)SecurityUtils.getSubject().getPrincipal();
-            shopService.insertShop(user.getUsername(),longitude,latitude,address);
+//            User user = (User)SecurityUtils.getSubject().getPrincipal();
+            shopService.insertShop(username,longitude,latitude,address);
 
             return Msg.success().setMessage("添加店铺成功");
         }catch (DuplicateKeyException e)

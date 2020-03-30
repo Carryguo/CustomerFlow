@@ -29,30 +29,40 @@ public class AuthRealm extends AuthorizingRealm {
         //String id = (String)subject.getSession().getAttribute("id"); 获取当前的用户id
         //获取用户
         User user = (User)principalCollection.fromRealm(this.getClass().getName()).iterator().next();
+        System.out.println(user);
+
         //添加权限认证
         List<String> permissionList = new ArrayList<>();
         //添加角色认证
-        List<String> roleNameList = new ArrayList<>();
+//        List<String> roleNameList = new ArrayList<>();
         //获取用户角色
-        Set<Role> roleSet = user.getRoles();
-        if (CollectionUtils.isNotEmpty(roleSet)){
-            for (Role role : roleSet)
-            {
-                roleNameList.add(role.getRname());
-                Set<Permission> permissionSet = role.getPermissions();
-                if (CollectionUtils.isNotEmpty(roleSet)) {
-                    for (Permission permission:permissionSet) {
+//        Set<Role> roleSet = user.getRoles();
+//        if (CollectionUtils.isNotEmpty(roleSet)){
+//            for (Role role : roleSet)
+//            {
+//                roleNameList.add(role.getRname());
+//                Set<Permission> permissionSet = role.getPermissions();
+//                if (CollectionUtils.isNotEmpty(roleSet)) {
+//                    for (Permission permission:permissionSet) {
+//                        //添加权限 判断这个角色有没有相应的权限
+//                        permissionList.add(permission.getName());
+//                    }
+//                }
+//            }
+//        }
+
+        Set<Permission> permissionSet = user.getPermissions();
+                if (CollectionUtils.isNotEmpty(permissionSet))
+                    for (Permission permission:permissionSet)
                         //添加权限 判断这个角色有没有相应的权限
                         permissionList.add(permission.getName());
-                    }
-                }
-            }
-        }
+
+
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         //添加权限认证
         info.addStringPermissions(permissionList);
         //添加用户认证
-        info.addRoles(roleNameList);
+//        info.addRoles(roleNameList);
         return info;
     }
 
@@ -82,5 +92,3 @@ public class AuthRealm extends AuthorizingRealm {
     }
 
 }
-
-

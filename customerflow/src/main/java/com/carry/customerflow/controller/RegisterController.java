@@ -1,7 +1,12 @@
 package com.carry.customerflow.controller;
 
 import com.carry.customerflow.bean.Msg;
+import com.carry.customerflow.bean.Personal_Information;
 import com.carry.customerflow.bean.Shop;
+import com.carry.customerflow.bean.User_Permission;
+import com.carry.customerflow.mapper.PermissionMapper;
+import com.carry.customerflow.mapper.Personal_InformationMapper;
+import com.carry.customerflow.mapper.Register_ApprovalMapper;
 import com.carry.customerflow.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -16,6 +21,15 @@ import java.util.Map;
 public class RegisterController {
     @Autowired
     private RegisterService registerService;
+
+    @Autowired
+    private PermissionMapper permissionMapper;
+
+    @Autowired
+    private Register_ApprovalMapper register_approvalMapper;
+
+    @Autowired
+    private Personal_InformationMapper personal_informationMapper;
 
     /**
      * 根据店主名查找店名让店员选择
@@ -51,20 +65,59 @@ public class RegisterController {
      * @param address
      * @return
      */
+//    @PostMapping("/register")
+//    public Msg register(@RequestParam("uid")String uid,@RequestParam("username")String username,@RequestParam("password")String password,@RequestParam("address")String address){
+//       try{
+//           if ("3".equals(uid)&&"".equals(address)){
+//               return Msg.failure().setCode(401).setMessage("注册店员身份要查询店主的店铺,并且选择店铺进行绑定");
+//           }
+//           registerService.insertUser(uid,username,password,address);
+//        }catch (DuplicateKeyException e){
+//           return Msg.failure().setCode(402).setMessage("你所注册的用户名已经存在");
+//        }catch (Exception e)
+//       {
+//           return Msg.failure().setCode(403).setMessage("注册失败，请与管理员联系");
+//       }
+//        return Msg.success("注册用户成功");
+//    }
+
+
     @PostMapping("/register")
-    public Msg register(@RequestParam("uid")String uid,@RequestParam("username")String username,@RequestParam("password")String password,@RequestParam("address")String address){
-       try{
-           if ("3".equals(uid)&&"".equals(address)){
-               return Msg.failure().setCode(401).setMessage("注册店员身份要查询店主的店铺,并且选择店铺进行绑定");
-           }
-           registerService.insertUser(uid,username,password,address);
+    public Msg register(@RequestParam("uid")String uid,@RequestParam("username")String username,@RequestParam("password")String password,@RequestParam("address")String address,@RequestParam("bossname")String bossname){
+        try{
+            if ("3".equals(uid)&&"".equals(address)){
+                return Msg.failure().setCode(401).setMessage("注册店员身份要查询店主的店铺,并且选择店铺进行绑定");
+            }else if ("3".equals(uid)&&!"".equals(address)){
+                if (registerService.checkExist(username)!=0)
+                    return Msg.failure().setCode(402).setMessage("你所注册的用户名已经存在");
+                register_approvalMapper.inserStaffApproval(uid,username,password,address,bossname);
+                return Msg.success(201).setMessage("注册成功，请等待店主的审批");
+            }else
+            registerService.insertUser(uid,username,password,address,bossname);
+
+            //给出初始权限
+            List<Integer> pidList = permissionMapper.searchPid(uid);
+            List<User_Permission> user_permissionList = new ArrayList<>();
+            for (Integer pid:pidList)
+                user_permissionList.add(User_Permission.builder().username(username).pid(pid).build());
+            //插入权限
+            permissionMapper.insertPid(user_permissionList);
+
+            Personal_Information personal_information = Personal_Information.builder().uid(Integer.parseInt(uid)).username(username).build();
+            //初始化个人信息
+            personal_informationMapper.initializePersonal_Information(personal_information);
+
         }catch (DuplicateKeyException e){
-           return Msg.failure().setCode(402).setMessage("你所注册的用户名已经存在");
+            return Msg.failure().setCode(402).setMessage("你所注册的用户名已经存在");
         }catch (Exception e)
-       {
-           return Msg.failure().setCode(403).setMessage("注册失败，请与管理员联系");
-       }
+        {
+            e.printStackTrace();
+            return Msg.failure().setCode(403).setMessage("注册失败，请与管理员联系");
+        }
         return Msg.success("注册用户成功");
     }
+
+
+
 }
 

@@ -10,4 +10,6 @@ public interface ShopMapper {
     void insertShop(@Param("username")String username,@Param("longitude")String longitude,@Param("latitude")String latitude,@Param("address")String address);
     List<String> findAllShop();
     void deleteShop(@Param("address")String address);
+    Integer checkShop(@Param("address")String address);
+    void changeBondShop(@Param("username")String username,@Param("address")String address);
 }

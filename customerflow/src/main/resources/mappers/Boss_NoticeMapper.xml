@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carry.customerflow.mapper.Boss_NoticeMapper">
+    <insert id="editBoss_Notice">
+        insert into boss_notice
+        (username,notice,status,date)
+        values
+        (#{boss_notice.username},#{boss_notice.notice},#{boss_notice.status},#{boss_notice.date})
+    </insert>
+
+    <select id="getBoss_Notice" resultType="com.carry.customerflow.bean.Boss_Notice">
+        select * from boss_notice
+        where
+        username = #{username}
+    </select>
+
+    <update id="changeBoss_NoticeStatus">
+        update boss_notice
+        set status = #{status}
+        where
+        username = #{username} and id = #{id}
+    </update>
+
+    <delete id="deleteBoss_Notice">
+    delete from boss_notice where username = #{username} and id = #{id}
+    </delete>
+
+</mapper>

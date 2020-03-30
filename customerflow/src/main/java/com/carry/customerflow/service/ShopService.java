@@ -8,4 +8,6 @@ public interface ShopService {
     List<Shop> findShopByUsername(String username);
     void insertShop(String username,String longitude,String latitude,String address);
     void deleteShop(String address);
+    Integer checkShop(String address);
+    void changeBondShop(String username,String address);
 }

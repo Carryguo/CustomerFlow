@@ -38,4 +38,14 @@ public class ShopServiceImp implements ShopService {
         shopMapper.deleteShop(address);
     }
 
+    @Override
+    public Integer checkShop(String address) {
+        return shopMapper.checkShop(address);
+    }
+
+    @Override
+    public void changeBondShop(String username, String address) {
+        shopMapper.changeBondShop(username,address);
+    }
+
 }

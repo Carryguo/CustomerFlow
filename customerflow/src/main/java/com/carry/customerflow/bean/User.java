@@ -25,7 +25,15 @@ public class User implements Serializable  {
      */
     private String address;
     /**
+     * 老板的名字
+     */
+    private String bossname;
+    /**
      * 一个用户对应多个角色
      */
-    private Set<Role> roles = new HashSet<>();
+//    private Set<Role> roles = new HashSet<>();
+    /**
+     * 一个用户对应多个权限
+      */
+    private Set<Permission> permissions = new HashSet<>();
 }

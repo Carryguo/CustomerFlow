@@ -11,15 +11,19 @@ import java.util.List;
 public class RegisterServiceImp implements RegisterService {
     @Resource
     private RegisterMapper registerMapper;
+
     @Override
     public List<Shop> findAddressByUsername(String username) {
         return registerMapper.findAddressByUsername(username);
     }
 
-
     @Override
-    public void insertUser(String uid,String username, String password, String address) {
-        registerMapper.insertUser(uid,username,password,address);
+    public void insertUser(String uid,String username, String password, String address,String bossname) {
+        registerMapper.insertUser(uid,username,password,address,bossname);
     }
 
+    @Override
+    public Integer checkExist(String username) {
+        return registerMapper.checkExist(username);
+    }
 }

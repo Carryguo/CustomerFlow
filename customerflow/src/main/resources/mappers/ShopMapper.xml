@@ -20,4 +20,13 @@
   <delete id="deleteShop">
     delete from shop where address = #{address}
   </delete>
+
+  <select id="checkShop" resultType="java.lang.Integer">
+    select count(*) from shop where address = #{address}
+  </select>
+
+  <update id="changeBondShop">
+    update user
+    set address = #{address} where username = #{username}
+  </update>
 </mapper>

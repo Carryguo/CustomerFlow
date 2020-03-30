@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carry.customerflow.mapper.Personal_InformationMapper">
+
+    <insert id="initializePersonal_Information">
+        insert into personal_information
+        (bossname,job_number,name,phone,entry_time,username,uid)
+        values
+        (#{personal_information.bossname},#{personal_information.job_number},#{personal_information.name},#{personal_information.phone},#{personal_information.entry_time},#{personal_information.username},#{personal_information.uid})
+    </insert>
+
+    <select id="searchPersonal_InformationByUsername" resultType="com.carry.customerflow.bean.Personal_Information">
+        select * from personal_information
+        where username = #{username}
+    </select>
+
+    <select id="searchPersonal_InformationList" resultType="com.carry.customerflow.bean.Personal_Information">
+        select *
+        from personal_information
+        <where>
+            <choose>
+                <when test="param == '2'.toString()">
+                    uid = 2
+                </when>
+                <otherwise>
+                    bossname = #{param}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="checkUserPassword" resultType="com.carry.customerflow.bean.User">
+        select * from user where username = #{username} and password = #{password}
+    </select>
+
+    <update id="changeUserPassword">
+        update user
+        set
+        password = #{newPassword}
+        where
+        username = #{username}
+    </update>
+
+    <update id="editPersonal_Information">
+        update personal_information
+        set job_number = #{personal_information.job_number},name = #{personal_information.name},phone = #{personal_information.phone},entry_time = #{personal_information.entry_time}
+        where
+        username = #{username}
+    </update>
+</mapper>

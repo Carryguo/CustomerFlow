@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carry.customerflow.mapper.Register_ApprovalMapper">
+
+    <insert id="inserStaffApproval">
+        insert into register_approval
+        (uid,username,password,address,bossname)
+        values
+        (#{uid},#{username},#{password},#{address},#{bossname})
+    </insert>
+
+    <insert id="admitStaffApproval">
+        insert into user
+        (uid,username,password,address,bossname)
+        select
+        uid,username,password,address,bossname from register_approval
+        where username = #{username} and bossname=#{bossname}
+    </insert>
+
+    <delete id="deleteStaffApproval">
+        delete from register_approval
+        where username = #{username} and bossname=#{bossname}
+    </delete>
+
+    <select id="searchRegister_ApprovalByBossname" resultType="com.carry.customerflow.bean.Register_Approval">
+        select * from register_approval where bossname = #{bossname}
+    </select>
+
+</mapper>

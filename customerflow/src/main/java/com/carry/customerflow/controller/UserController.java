@@ -113,6 +113,7 @@ public class UserController {
         map.put("token",sessionId);
         map.put("uid",user.getUid());
         map.put("address",user.getAddress());
+        map.put("bossname",user.getBossname());
         return Msg.success().setData(map);
     }
 
@@ -129,6 +130,17 @@ public class UserController {
         }catch (Exception e){
             e.printStackTrace();
             return Msg.failure().setCode(401).setMessage("返回店主失败");
+        }
+    }
+
+    @GetMapping("/searchStaffnameByBossname")
+    public Msg searchStaffnameByBossname(@RequestParam("bossname")String bossname){
+        try{
+            List<User> userList = userMapper.searchStaffnameByBossname(bossname);
+            return Msg.success(userList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("数据返回失败");
         }
     }
 }

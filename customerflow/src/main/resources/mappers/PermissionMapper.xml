@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carry.customerflow.mapper.PermissionMapper">
+    <select id="searchPid" resultType="java.lang.Integer" >
+      select distinct pid
+      from permission_role
+      where rid in (select rid from user_role where uid = #{uid})
+    </select>
+
+    <insert id="insertPid">
+        insert into user_permission
+        (username,pid)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.username,jdbcType=VARCHAR},#{item.pid,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <insert id="addPermission">
+        insert into user_permission
+        (username,pid)
+        values
+        (#{username},#{pid})
+    </insert>
+
+    <delete id="deletePermission">
+        delete from user_permission where username = #{username} and pid = #{pid}
+    </delete>
+
+    <select id="searchAllPermission" resultType="com.carry.customerflow.bean.Permission" >
+      select *
+      from permission
+    </select>
+
+    <select id="searchStaffNamebybossname" resultType="java.lang.String" >
+      select username
+      from user
+      where bossname = #{bossname}
+    </select>
+</mapper>

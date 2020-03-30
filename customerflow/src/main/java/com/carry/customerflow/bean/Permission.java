@@ -18,5 +18,12 @@ public class Permission implements Serializable {
      * 权限接口
      */
     private String url;
-
+    /**
+     * 权限的中文名
+     */
+    private String Chinese_name;
+    /**
+     * 状态
+     */
+    private Integer status;
 }

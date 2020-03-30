@@ -9,4 +9,5 @@ public interface UserMapper {
     User findByUsername(@Param("username") String username);
     User findByUsernameTest(@Param("username") String username);
     List<User> searchAllBoss();
+    List<User> searchStaffnameByBossname(@Param("bossname")String bossname);
 }

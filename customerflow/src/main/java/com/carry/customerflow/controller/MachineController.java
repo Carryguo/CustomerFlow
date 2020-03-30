@@ -38,7 +38,7 @@ public class MachineController {
      * @return
      */
     @PostMapping("/insertMachine")
-    public Msg insertMachine(@RequestParam("machineId")String machineId, @RequestParam("address")String address, @RequestParam("rssi")String rssi,@RequestParam("leastRssi")String leastRssi){
+    public Msg insertMachine(@RequestParam("username")String username,@RequestParam("machineId")String machineId, @RequestParam("address")String address, @RequestParam("rssi")String rssi,@RequestParam("leastRssi")String leastRssi){
         try {
             Integer  rssiInt = Integer.parseInt(rssi);
             Integer  leastRssiInt = Integer.parseInt(leastRssi);
@@ -68,8 +68,8 @@ public class MachineController {
             redisUtil.hmset("machine",machineMap);
 //            System.out.println(redisUtil.hmget("machine"));
             //这个地方到时候要从Session中获取用户名放进去
-            User user = (User)SecurityUtils.getSubject().getPrincipal();
-            machineService.insertMachine(user.getUsername(),machineId, address,rssiInt,leastRssiInt,"离线");
+//            User user = (User)SecurityUtils.getSubject().getPrincipal();
+            machineService.insertMachine(username,machineId, address,rssiInt,leastRssiInt,"离线");
         }catch (NumberFormatException e){
             return Msg.failure().setCode(405).setMessage("rssi和最小限制leastRssi请设置负数");
         } catch (DuplicateKeyException e){
