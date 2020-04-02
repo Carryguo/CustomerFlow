@@ -149,6 +149,16 @@ public class MachineController {
             e.printStackTrace();
             return Msg.failure().setCode(401).setMessage("设备编辑失败");
         }
+    }
 
+    @GetMapping("/searchMachineByMachineId")
+    public Msg searchMachineByMachineId(@RequestParam("machineId")String machineId){
+        try{
+            List<Machine> machineList = machineService.searchMachineByMachineId(machineId);
+            return Msg.success(machineList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("服务器错误");
+        }
     }
 }

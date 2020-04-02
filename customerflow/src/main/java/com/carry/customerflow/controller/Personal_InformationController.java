@@ -58,7 +58,6 @@ public class Personal_InformationController {
             e.printStackTrace();
             return Msg.failure().setCode(401).setMessage("服务器异常");
         }
-
     }
 
     /**
@@ -93,4 +92,57 @@ public class Personal_InformationController {
             return Msg.failure().setCode(401).setMessage("操作失败");
         }
     }
+
+    /**
+     * 返回个人信息列表(没有密码)
+     * param = "2" 返回店主的信息,param != "2" 返回店员的信息
+     * @return
+     */
+    @GetMapping("/searchPersonal_InformationListExcludePassword")
+    public Msg searchPersonal_InformationListExcludePassword(@RequestParam("param")String param){
+        try{
+            List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationList(param);
+            return Msg.success(personal_informationList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("服务器错误");
+        }
+    }
+
+    /**
+     * 根据用户名、名字或工号查看个人信息(没有密码)
+     * @param param
+     * @return
+     */
+    @GetMapping("/searchPersonal_InformationByUsernameOrNameExcludePassword")
+    public Msg searchPersonal_InformationByUsernameOrNameExcludePassword(@RequestParam("param")String param){
+        try{
+            List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationByUsernameOrNameExcludePassword(param);
+            return Msg.success(personal_informationList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("服务器错误");
+        }
+    }
+
+    /**
+     * 根据用户名或名字查看个人信息
+     * @param param
+     * @return
+     */
+    @GetMapping("/searchPersonal_InformationByUsernameOrName")
+    public Msg searchPersonal_InformationByUsernameOrName(@RequestParam("param")String param){
+        try{
+            List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationByUsernameOrNameExcludePassword(param);
+            for(Personal_Information personal_information:personal_informationList){
+                User user = userService.findByUsername(personal_information.getUsername());
+                personal_information.setPassword(user.getPassword());
+            }
+            return Msg.success(personal_informationList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("服务器错误");
+        }
+    }
+
 }

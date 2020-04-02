@@ -13,4 +13,5 @@ public interface CustomerMapper {
     List<String> searchExtraJumpOut();
     void updateInjudge();
     void test(@Param("mac")String mac);
+    void deleteExpiredCustomer();
 }

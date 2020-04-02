@@ -12,4 +12,5 @@ public interface ShopMapper {
     void deleteShop(@Param("address")String address);
     Integer checkShop(@Param("address")String address);
     void changeBondShop(@Param("username")String username,@Param("address")String address);
+    void deleteShopByBossName(@Param("username")String username);
 }

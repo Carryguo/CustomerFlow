@@ -77,5 +77,12 @@
     where bossname = #{bossname}
     </select>
 
+    <delete id="deleteUser">
+        delete from user where username = #{username}
+    </delete>
+
+    <delete id="deleteStaff">
+        delete from user from bossname = #{bossname}
+    </delete>
 
 </mapper>

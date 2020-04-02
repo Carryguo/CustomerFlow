@@ -47,4 +47,11 @@
         where
         username = #{username}
     </update>
+
+    <select id="searchPersonal_InformationByUsernameOrNameExcludePassword" resultType="com.carry.customerflow.bean.Personal_Information">
+        select *
+        from personal_information
+        where
+        job_number like CONCAT(#{param},'%') or name like CONCAT(#{param},'%') or username like CONCAT(#{param},'%')
+    </select>
 </mapper>

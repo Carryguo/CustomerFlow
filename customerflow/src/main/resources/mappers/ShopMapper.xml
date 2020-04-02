@@ -29,4 +29,8 @@
     update user
     set address = #{address} where username = #{username}
   </update>
+
+  <delete id="deleteShopByBossName">
+    delete from shop where username = #{username}
+  </delete>
 </mapper>

@@ -42,4 +42,8 @@
         WHERE
         mac = #{mac}
     </update>
+
+    <delete id="deleteExpiredCustomer">
+        delete from customer where beat &lt; DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+    </delete>
 </mapper>

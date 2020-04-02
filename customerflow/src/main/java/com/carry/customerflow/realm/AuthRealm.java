@@ -29,7 +29,7 @@ public class AuthRealm extends AuthorizingRealm {
         //String id = (String)subject.getSession().getAttribute("id"); 获取当前的用户id
         //获取用户
         User user = (User)principalCollection.fromRealm(this.getClass().getName()).iterator().next();
-        System.out.println(user);
+//        System.out.println(user);
 
         //添加权限认证
         List<String> permissionList = new ArrayList<>();

@@ -85,7 +85,6 @@ public class PermissionController {
                                  if (sub_permission.getPid() == permission.getPid())
                                      iterator.remove();
                          }
-
             permissionList.addAll(permissionSet);
             return Msg.success(permissionList);
             }else  return Msg.success(permissionSet);

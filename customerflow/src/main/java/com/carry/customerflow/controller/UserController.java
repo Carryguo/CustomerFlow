@@ -1,7 +1,10 @@
 package com.carry.customerflow.controller;
 
 import com.carry.customerflow.bean.Msg;
+import com.carry.customerflow.bean.Shop;
 import com.carry.customerflow.bean.User;
+import com.carry.customerflow.mapper.MachineMapper;
+import com.carry.customerflow.mapper.ShopMapper;
 import com.carry.customerflow.mapper.UserMapper;
 import com.carry.customerflow.realm.AuthRealm;
 import com.carry.customerflow.service.UserService;
@@ -12,6 +15,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -27,6 +31,12 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ShopMapper shopMapper;
+
+    @Autowired
+    private MachineMapper machineMapper;
 
     @RequestMapping("/login")
     public Msg login(){
@@ -133,6 +143,11 @@ public class UserController {
         }
     }
 
+    /**
+     * 查看店员信息
+     * @param bossname
+     * @return
+     */
     @GetMapping("/searchStaffnameByBossname")
     public Msg searchStaffnameByBossname(@RequestParam("bossname")String bossname){
         try{
@@ -143,4 +158,31 @@ public class UserController {
             return Msg.failure().setCode(401).setMessage("数据返回失败");
         }
     }
+
+    /**
+     * 删除用户
+     * @param uid
+     * @param username
+     * @return
+     */
+    public Msg deleteUser(@RequestParam("uid")String uid,@RequestParam("username")String username){
+        try{
+            if (uid.equals("2")){
+                userMapper.deleteUser(username);
+                userMapper.deleteStaff(username);
+                //删除店铺和设备
+                List<Shop> shopList = shopMapper.findShopByUsername(username);
+                for (Shop shop:shopList)
+                    shopMapper.deleteShop(shop.getAddress());
+                shopMapper.findShopByUsername(username);
+            }else if(uid.equals("3")){
+                userMapper.deleteUser(username);
+            }
+            return Msg.success().setMessage("操作成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("服务错误");
+        }
+    }
+
 }

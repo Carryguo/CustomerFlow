@@ -72,5 +72,7 @@
       id in (select id from (select * from shop_data where address=#{address} ORDER BY update_time desc LIMIT 1)as t)
     </update>
 
-
+    <delete id="deleteExpiredShop_data">
+        delete from shop_data where update_time &lt; DATE_SUB(CURDATE(),INTERVAL 3 MONTH)
+    </delete>
 </mapper>

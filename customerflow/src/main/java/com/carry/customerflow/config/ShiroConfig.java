@@ -98,8 +98,8 @@ public class ShiroConfig {
 //        filterChainDefinitionMap.put("/admin","authc");
         filterChainDefinitionMap.put("/test","roles[boss,admin]");
         filterChainDefinitionMap.put("/test","roles[boss,staff]");
-        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,admin]");
-        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,staff]");
+//        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,admin]");
+//        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,staff]");
         filterChainDefinitionMap.put("/test","perms[edit,add,query,delete]");
 
         //开发完再把限权打开

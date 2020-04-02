@@ -393,7 +393,6 @@ public class DataProcessor implements CommandLineRunner {
         //添加下一个小时的店铺时间
         dataUtil.insertShop();
 
-
         //补充遗漏的跳出量
         List<String> extraJumpOutAddressList = customerMapper.searchExtraJumpOut();
         customerMapper.updateInjudge();
@@ -402,5 +401,13 @@ public class DataProcessor implements CommandLineRunner {
 
     }
 
+    //此进程用于删除三个月前的数据
+    @Transactional
+    @Async
+    @Scheduled(cron = "* * * * 1/3 ?")
+    public void deleteDataThread(){
+            shop_dataMapper.deleteExpiredShop_data();
+            customerMapper.deleteExpiredCustomer();
+    }
 
 }
