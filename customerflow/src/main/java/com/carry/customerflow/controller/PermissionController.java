@@ -71,6 +71,10 @@ public class PermissionController {
             for (Permission permission:permissionList)
                 permission.setStatus(0);
 
+            if(user == null){
+              return  Msg.success(permissionList);
+            }
+
             //标记已有的权限
             Set<Permission> permissionSet = user.getPermissions();
             for(Permission permission:permissionSet)

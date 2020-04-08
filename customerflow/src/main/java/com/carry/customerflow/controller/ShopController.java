@@ -79,6 +79,17 @@ public class ShopController
         return findShop(username);
     }
 
+    /**
+     * 根据店主的名字返回店铺 用于设计权限检查
+     * @return
+     */
+    @GetMapping("/findShopByUsernameCheckPermission")
+    public Msg findShopByUsernameCheckPermission(@RequestParam("username")String username){
+        //这个地方到时候要从Session中获取用户名放进去
+//        User user = (User)SecurityUtils.getSubject().getPrincipal();
+        return findShop(username);
+    }
+
     private Msg findShop(String username){
         try{
             List<Shop> shopList = shopService.findShopByUsername(username);
@@ -90,6 +101,7 @@ public class ShopController
             return Msg.failure().setCode(401).setMessage("返回商店失败");
         }
     }
+
 
     /**
      * 检查店铺是否存在

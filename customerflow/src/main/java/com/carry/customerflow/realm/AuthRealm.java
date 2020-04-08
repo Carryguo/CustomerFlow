@@ -77,6 +77,10 @@ public class AuthRealm extends AuthorizingRealm {
         UsernamePasswordToken token = (UsernamePasswordToken)authenticationToken;
         String username = token.getUsername();
         User user = userService.findByUsername(username);
+
+        if (user == null)
+            user = userService.findByUsernameWithoutPermission(username);
+
 //        System.out.println(user);
         SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user,user.getPassword(),this.getClass().getName());
         //认证成功开始踢人

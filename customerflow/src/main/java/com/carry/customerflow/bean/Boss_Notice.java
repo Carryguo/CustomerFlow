@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Data
 @Builder
@@ -30,5 +31,5 @@ public class Boss_Notice {
     /**
      * 日期
      */
-    private Date date;
+    private Timestamp date;
 }

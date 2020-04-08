@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,7 @@ public class Boss_NoticeController {
      * @return
      */
     @PostMapping("/editBoss_Notice")
-    public Msg editBoss_Notice(@RequestParam("username")String username, @RequestParam("notice")String notice, @Param("date")Date date){
+    public Msg editBoss_Notice(@RequestParam("username")String username, @RequestParam("notice")String notice, @Param("date")Timestamp date){
         try{
             boss_noticeMapper.editBoss_Notice(Boss_Notice.builder().username(username).notice(notice).status(0).date(date).build());
             List<User> userList = userMapper.searchStaffnameByBossname(username);
@@ -85,4 +86,14 @@ public class Boss_NoticeController {
         }
     }
 
+    //检查权限
+    @GetMapping("/checkBoss_NoticePermission")
+    public Msg checkBoss_NoticePermission(){
+        try{
+            return Msg.success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("服务器错误");
+        }
+    }
 }

@@ -17,6 +17,8 @@ spring:
          max-wait: 10000      # 连接池最大阻塞等待时间（使用负值表示没有限制）
          max-idle: 3000      # 连接池中的最大空闲连接
          min-idle: 1000       # 连接池中的最小空闲连接
+  jackson:
+      time-zone: GMT+8
 
 ## port ##
 server:

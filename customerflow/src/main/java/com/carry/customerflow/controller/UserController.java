@@ -101,7 +101,6 @@ public class UserController {
     @PostMapping("/loginUser")
         public Msg loginUser(@RequestParam("username") String username, @RequestParam("password") String password, HttpSession session)
     {
-
         String sessionId = null;
         User user;
         UsernamePasswordToken token = new UsernamePasswordToken(username,password);
@@ -165,6 +164,7 @@ public class UserController {
      * @param username
      * @return
      */
+    @DeleteMapping("/deleteUser")
     public Msg deleteUser(@RequestParam("uid")String uid,@RequestParam("username")String username){
         try{
             if (uid.equals("2")){

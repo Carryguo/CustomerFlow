@@ -18,5 +18,10 @@ public class UserServiceImp implements UserService {
         return userMapper.findByUsername(username);
     }
 
+    @Override
+    public User findByUsernameWithoutPermission(String username) {
+        return userMapper.findByUsernameWithoutPermission(username);
+    }
+
 
 }

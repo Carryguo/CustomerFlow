@@ -55,6 +55,13 @@
     where u.username = #{username}
     </select>
 
+    <select id="findByUsernameWithoutPermission" resultType="com.carry.customerflow.bean.User">
+        select *
+        from user
+        where
+        username = #{username}
+    </select>
+
     <select id="findByUsernameTest" resultType="com.carry.customerflow.bean.User">
     select u.*,r.*,p.*
     from user u

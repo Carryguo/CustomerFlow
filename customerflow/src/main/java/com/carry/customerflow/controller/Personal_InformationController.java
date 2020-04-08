@@ -40,6 +40,7 @@ public class Personal_InformationController {
             return Msg.failure().setCode(401).setMessage("服务器错误");
         }
     }
+
     /**
      * 返回个人信息列表
      * param = "2" 返回店主的信息,param != "2" 返回店员的信息
