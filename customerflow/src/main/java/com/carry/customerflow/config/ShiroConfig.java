@@ -96,54 +96,55 @@ public class ShiroConfig {
 //        filterChainDefinitionMap.put("/admin","roles[admin]");
 //        filterChainDefinitionMap.put("/edit","perms[edit]");
 //        filterChainDefinitionMap.put("/admin","authc");
-        filterChainDefinitionMap.put("/test","roles[boss,admin]");
-        filterChainDefinitionMap.put("/test","roles[boss,staff]");
-//        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,admin]");
-//        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,staff]");
-        filterChainDefinitionMap.put("/test","perms[edit,add,query,delete]");
+ //-------
+//        filterChainDefinitionMap.put("/test","roles[boss,admin]");
+//        filterChainDefinitionMap.put("/test","roles[boss,staff]");
+////        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,admin]");
+////        filterChainDefinitionMap.put("/findMachineByAddress","roles[boss,staff]");
+//        filterChainDefinitionMap.put("/test","perms[edit,add,query,delete]");
 
-//        //查看店铺的权限 修改 新建一个接口给店主查看数据
-//                filterChainDefinitionMap.put("/findShop","perms[findShop]");
-//
-//        //添加店铺权限
-//                filterChainDefinitionMap.put("/insertShop","perms[insertShop]");
-//
-//        //删除店铺权限
-//                filterChainDefinitionMap.put("/delectShop","perms[delectShop]");
-//
-//        //查看设备权限
-//                filterChainDefinitionMap.put("/findMachineByAddress","perms[findMachineByAddress]");
-//
-//        //编辑设备权限
-//                filterChainDefinitionMap.put("/editMachine","perms[editMachine]");
-//
-//        //添加设备权限
-//                filterChainDefinitionMap.put("/insertMachine","perms[insertMachine]");
-//
-//        //删除设备权限
-//                filterChainDefinitionMap.put("/deleteMachineByMachineId","perms[deleteMachineByMachineId]");
-//
-//        //权限管理权限
-//                filterChainDefinitionMap.put("/searchStaffNameByBossname","perms[searchStaffNameByBossname]");
-//
-//        //店主公告权限
-//                filterChainDefinitionMap.put("/checkBoss_NoticePermission","perms[checkBoss_NoticePermission]");
-//
-//        //个人信息权限
-//                filterChainDefinitionMap.put("/searchPersonal_InformationList","perms[searchPersonal_InformationList]");
-//
-//        //登录的接口
-//                filterChainDefinitionMap.put("/loginUser","anon");
-//                filterChainDefinitionMap.put("/searchAllBoss","anon");
-//                filterChainDefinitionMap.put("/register","anon");
-//                filterChainDefinitionMap.put("/findShopByBossName","anon");
-//
-//        //开放其他接口(登录后可以访问)
-//                filterChainDefinitionMap.put("/**","authc");
+        //查看店铺的权限 修改 新建一个接口给店主查看数据
+                filterChainDefinitionMap.put("/findShop","perms[findShop]");
+
+        //添加店铺权限
+                filterChainDefinitionMap.put("/insertShop","perms[insertShop]");
+
+        //删除店铺权限
+                filterChainDefinitionMap.put("/delectShop","perms[delectShop]");
+
+        //查看设备权限
+                filterChainDefinitionMap.put("/findMachineByAddress","perms[findMachineByAddress]");
+
+        //编辑设备权限
+                filterChainDefinitionMap.put("/editMachine","perms[editMachine]");
+
+        //添加设备权限
+                filterChainDefinitionMap.put("/insertMachine","perms[insertMachine]");
+
+        //删除设备权限
+                filterChainDefinitionMap.put("/deleteMachineByMachineId","perms[deleteMachineByMachineId]");
+
+        //权限管理权限
+                filterChainDefinitionMap.put("/searchStaffNameByBossname","perms[searchStaffNameByBossname]");
+
+        //店主公告权限
+                filterChainDefinitionMap.put("/checkBoss_NoticePermission","perms[checkBoss_NoticePermission]");
+
+        //个人信息权限
+                filterChainDefinitionMap.put("/searchPersonal_InformationList","perms[searchPersonal_InformationList]");
+
+        //登录的接口
+                filterChainDefinitionMap.put("/loginUser","anon");
+                filterChainDefinitionMap.put("/searchAllBoss","anon");
+                filterChainDefinitionMap.put("/register","anon");
+                filterChainDefinitionMap.put("/findShopByBossName","anon");
+
+        //开放其他接口(登录后可以访问)
+                filterChainDefinitionMap.put("/**","authc");
 
 
         //开发完再把限权打开
-        filterChainDefinitionMap.put("/**","anon");
+//        filterChainDefinitionMap.put("/**","anon");
 
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return bean;

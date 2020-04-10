@@ -48,4 +48,9 @@ public class ShopServiceImp implements ShopService {
         shopMapper.changeBondShop(username,address);
     }
 
+    @Override
+    public List<Shop> searchShopByAddress(String address) {
+        return shopMapper.searchShopByAddress(address);
+    }
+
 }

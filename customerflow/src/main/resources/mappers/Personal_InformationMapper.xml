@@ -22,6 +22,9 @@
                 <when test="param == '2'.toString()">
                     uid = 2
                 </when>
+                <when test="param == '1'.toString()">
+                    uid = 1
+                </when>
                 <otherwise>
                     bossname = #{param}
                 </otherwise>
@@ -52,6 +55,10 @@
         select *
         from personal_information
         where
-        job_number like CONCAT(#{param},'%') or name like CONCAT(#{param},'%') or username like CONCAT(#{param},'%')
+        job_number like CONCAT(CONCAT('%', #{param}), '%') or name like CONCAT(CONCAT('%', #{param}), '%') or username like CONCAT(CONCAT('%', #{param}), '%')
     </select>
+
+    <delete id="deletePersonal_InformationByUsername">
+        delete from personal_information where username = #{username}
+    </delete>
 </mapper>

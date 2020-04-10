@@ -10,4 +10,5 @@ public interface Boss_NoticeMapper {
     List<Boss_Notice> getBoss_Notice(@Param("username")String username);
     void changeBoss_NoticeStatus(@Param("username")String username,@Param("status")Integer status,@Param("id")Integer id);
     void deleteBoss_Notice(@Param("username")String username,@Param("id")Integer id);
+    void deleteBoss_NoticeByUsername(@Param("username")String username);
 }

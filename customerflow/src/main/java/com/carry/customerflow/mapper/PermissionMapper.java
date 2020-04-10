@@ -13,4 +13,5 @@ public interface PermissionMapper {
     void deletePermission(@Param("username")String username,@Param("pid")Integer pid);
     List<Permission> searchAllPermission();
     List<String> searchStaffNamebybossname(@Param("bossname")String bossname);
+    void deletePermissionByUsername(@Param("username")String username);
 }

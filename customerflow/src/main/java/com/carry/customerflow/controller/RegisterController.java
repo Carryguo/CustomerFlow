@@ -90,8 +90,9 @@ public class RegisterController {
             }else if ("3".equals(uid)&&!"".equals(address)){
                 if (registerService.checkExist(username)!=0)
                     return Msg.failure().setCode(402).setMessage("你所注册的用户名已经存在");
+
                 register_approvalMapper.inserStaffApproval(uid,username,password,address,bossname);
-                return Msg.success(201).setMessage("注册成功，请等待店主的审批");
+                return Msg.success().setCode(201).setMessage("注册成功，请等待店主的审批");
             }else
             registerService.insertUser(uid,username,password,address,bossname);
 
@@ -107,6 +108,7 @@ public class RegisterController {
             //初始化个人信息
             personal_informationMapper.initializePersonal_Information(personal_information);
 
+            return Msg.success("注册用户成功");
         }catch (DuplicateKeyException e){
             return Msg.failure().setCode(402).setMessage("你所注册的用户名已经存在");
         }catch (Exception e)
@@ -114,7 +116,6 @@ public class RegisterController {
             e.printStackTrace();
             return Msg.failure().setCode(403).setMessage("注册失败，请与管理员联系");
         }
-        return Msg.success("注册用户成功");
     }
 
 

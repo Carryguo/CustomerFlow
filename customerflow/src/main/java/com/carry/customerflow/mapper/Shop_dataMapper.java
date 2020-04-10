@@ -24,4 +24,5 @@ public interface Shop_dataMapper {
     List<InCustomerPerHour> getInCustomerPerHour(@Param("address")String address,@Param("dateTime")String dateTime);
     Integer showDynamicCustomer(@Param("address")String address);
     void deleteExpiredShop_data();
+
 }

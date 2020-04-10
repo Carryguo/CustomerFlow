@@ -25,4 +25,8 @@
     delete from boss_notice where username = #{username} and id = #{id}
     </delete>
 
+    <delete id="deleteBoss_NoticeByUsername">
+        delete from boss_notice where username = #{username}
+    </delete>
+
 </mapper>

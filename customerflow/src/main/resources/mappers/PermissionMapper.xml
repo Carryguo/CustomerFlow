@@ -37,4 +37,8 @@
       from user
       where bossname = #{bossname}
     </select>
+
+    <delete id="deletePermissionByUsername">
+        delete from user_permission where username = #{username}
+    </delete>
 </mapper>

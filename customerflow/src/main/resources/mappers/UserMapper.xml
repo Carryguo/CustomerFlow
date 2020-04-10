@@ -89,7 +89,7 @@
     </delete>
 
     <delete id="deleteStaff">
-        delete from user from bossname = #{bossname}
+        delete from user where bossname = #{bossname}
     </delete>
 
 </mapper>

@@ -50,10 +50,12 @@ public class Personal_InformationController {
     public Msg searchPersonal_InformationList(@RequestParam("param")String param){
         try{
             List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationList(param);
-            for(Personal_Information personal_information:personal_informationList){
-                User user = userService.findByUsername(personal_information.getUsername());
-                personal_information.setPassword(user.getPassword());
-            }
+//            for(Personal_Information personal_information:personal_informationList){
+//                User user = userService.findByUsername(personal_information.getUsername());
+//                if (user == null)
+//                    user = userService.findByUsernameWithoutPermission(personal_information.getUsername());
+//                personal_information.setPassword(user.getPassword());
+//            }
             return Msg.success(personal_informationList);
         }catch (Exception e){
             e.printStackTrace();
@@ -135,11 +137,24 @@ public class Personal_InformationController {
     public Msg searchPersonal_InformationByUsernameOrName(@RequestParam("param")String param){
         try{
             List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationByUsernameOrNameExcludePassword(param);
-            for(Personal_Information personal_information:personal_informationList){
-                User user = userService.findByUsername(personal_information.getUsername());
-                personal_information.setPassword(user.getPassword());
-            }
+//            for(Personal_Information personal_information:personal_informationList){
+//                User user = userService.findByUsername(personal_information.getUsername());
+//                if (user == null)
+//                    user = userService.findByUsernameWithoutPermission(personal_information.getUsername());
+//                personal_information.setPassword(user.getPassword());
+//            }
             return Msg.success(personal_informationList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("服务器错误");
+        }
+    }
+
+    @PostMapping("/resetPassword")
+    public Msg resetPassword(@RequestParam("username")String username){
+        try{
+            personal_informationMapper.changeUserPassword(username,"123456");
+            return Msg.success().setMessage("密码初始化成功，初始化密码为123456");
         }catch (Exception e){
             e.printStackTrace();
             return Msg.failure().setCode(401).setMessage("服务器错误");

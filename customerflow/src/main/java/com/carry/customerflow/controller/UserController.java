@@ -3,9 +3,7 @@ package com.carry.customerflow.controller;
 import com.carry.customerflow.bean.Msg;
 import com.carry.customerflow.bean.Shop;
 import com.carry.customerflow.bean.User;
-import com.carry.customerflow.mapper.MachineMapper;
-import com.carry.customerflow.mapper.ShopMapper;
-import com.carry.customerflow.mapper.UserMapper;
+import com.carry.customerflow.mapper.*;
 import com.carry.customerflow.realm.AuthRealm;
 import com.carry.customerflow.service.UserService;
 import org.apache.ibatis.annotations.Param;
@@ -36,7 +34,16 @@ public class UserController {
     private ShopMapper shopMapper;
 
     @Autowired
+    private Personal_InformationMapper personal_informationMapper;
+
+    @Autowired
     private MachineMapper machineMapper;
+
+    @Autowired
+    private PermissionMapper permissionMapper;
+
+    @Autowired
+    private Boss_NoticeMapper boss_noticeMapper;
 
     @RequestMapping("/login")
     public Msg login(){
@@ -168,16 +175,18 @@ public class UserController {
     public Msg deleteUser(@RequestParam("uid")String uid,@RequestParam("username")String username){
         try{
             if (uid.equals("2")){
-                userMapper.deleteUser(username);
                 userMapper.deleteStaff(username);
                 //删除店铺和设备
                 List<Shop> shopList = shopMapper.findShopByUsername(username);
-                for (Shop shop:shopList)
+                for (Shop shop:shopList) {
                     shopMapper.deleteShop(shop.getAddress());
-                shopMapper.findShopByUsername(username);
-            }else if(uid.equals("3")){
-                userMapper.deleteUser(username);
+                    machineMapper.deleteMachineByAddress(shop.getAddress());
+                }
             }
+            userMapper.deleteUser(username);
+            personal_informationMapper.deletePersonal_InformationByUsername(username);
+            boss_noticeMapper.deleteBoss_NoticeByUsername(username);
+            permissionMapper.deletePermissionByUsername(username);
             return Msg.success().setMessage("操作成功");
         }catch (Exception e){
             e.printStackTrace();

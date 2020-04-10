@@ -156,8 +156,10 @@ public class ShopController
     public Msg delectShop(@RequestParam("address")String address){
         try{
             shopService.deleteShop(address);
+
             //删除设备
             machineService.deleteMachineByAddress(address);
+
             //初始化设备缓存
             dataUtil.refreshMachineCache();
         }catch (Exception e)
@@ -167,6 +169,11 @@ public class ShopController
         return Msg.success().setMessage("删除成功");
     }
 
+    /**
+     * 查找当前在店客流量
+     * @param address
+     * @return
+     */
     @GetMapping("/showDynamicCustomer")
     public Msg showDynamicCustomer(@RequestParam("address")String address)
     {
@@ -176,6 +183,22 @@ public class ShopController
         }catch (Exception e)
         {
             return Msg.failure().setCode(401).setMessage("返回数据失败");
+        }
+    }
+
+    /**
+     * 根据店名模糊查询
+     * @param address
+     * @return
+     */
+    @GetMapping("/searchShopByAddress")
+    public Msg searchShopByAddress(@RequestParam("address")String address){
+        try
+        {
+            return Msg.success(shopService.searchShopByAddress(address));
+        }catch (Exception e)
+        {
+            return Msg.failure().setCode(401).setMessage("服务器错误");
         }
     }
 }

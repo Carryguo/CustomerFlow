@@ -33,4 +33,11 @@
   <delete id="deleteShopByBossName">
     delete from shop where username = #{username}
   </delete>
+
+  <select id="searchShopByAddress" resultType="com.carry.customerflow.bean.Shop">
+    select *
+    from shop
+    where
+    address like  CONCAT(CONCAT('%', #{address}), '%')
+  </select>
 </mapper>

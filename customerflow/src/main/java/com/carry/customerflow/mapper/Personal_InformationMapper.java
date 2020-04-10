@@ -15,4 +15,5 @@ public interface Personal_InformationMapper {
     void changeUserPassword(@Param("username")String username,@Param("newPassword")String newPassword);
     void editPersonal_Information(@Param("personal_information")Personal_Information personal_information,@Param("username")String username);
     List<Personal_Information> searchPersonal_InformationByUsernameOrNameExcludePassword(@Param("param")String param);
+    void deletePersonal_InformationByUsername(@Param("username")String username);
 }

@@ -45,6 +45,6 @@
     <select id="searchMachineByMachineId" resultType="com.carry.customerflow.bean.Machine">
         select * from machine
         where
-        machineId like CONCAT(#{machineId},'%')
+        machineId like CONCAT(CONCAT('%', #{machineId}), '%')
     </select>
 </mapper>
