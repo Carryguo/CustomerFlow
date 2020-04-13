@@ -49,8 +49,8 @@ public class ShopServiceImp implements ShopService {
     }
 
     @Override
-    public List<Shop> searchShopByAddress(String address) {
-        return shopMapper.searchShopByAddress(address);
+    public List<Shop> searchShopByAddress(String address,String username) {
+        return shopMapper.searchShopByAddress(address,username);
     }
 
 }

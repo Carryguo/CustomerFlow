@@ -48,7 +48,7 @@ public class MachineServiceImp implements MachineService {
     }
 
     @Override
-    public List<Machine> searchMachineByMachineId(String MachineId) {
-        return machineMapper.searchMachineByMachineId(MachineId);
+    public List<Machine> searchMachineByMachineId(String MachineId,String address) {
+        return machineMapper.searchMachineByMachineId(MachineId,address);
     }
 }

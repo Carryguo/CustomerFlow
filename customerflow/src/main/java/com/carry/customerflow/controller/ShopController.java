@@ -192,10 +192,10 @@ public class ShopController
      * @return
      */
     @GetMapping("/searchShopByAddress")
-    public Msg searchShopByAddress(@RequestParam("address")String address){
+    public Msg searchShopByAddress(@RequestParam("address")String address,@RequestParam("username")String username){
         try
         {
-            return Msg.success(shopService.searchShopByAddress(address));
+            return Msg.success(shopService.searchShopByAddress(address,username));
         }catch (Exception e)
         {
             return Msg.failure().setCode(401).setMessage("服务器错误");

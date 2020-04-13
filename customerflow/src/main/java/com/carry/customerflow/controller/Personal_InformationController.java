@@ -112,31 +112,48 @@ public class Personal_InformationController {
         }
     }
 
-    /**
-     * 根据用户名、名字或工号查看个人信息(没有密码)
-     * @param param
-     * @return
-     */
-    @GetMapping("/searchPersonal_InformationByUsernameOrNameExcludePassword")
-    public Msg searchPersonal_InformationByUsernameOrNameExcludePassword(@RequestParam("param")String param){
-        try{
-            List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationByUsernameOrNameExcludePassword(param);
-            return Msg.success(personal_informationList);
-        }catch (Exception e){
-            e.printStackTrace();
-            return Msg.failure().setCode(401).setMessage("服务器错误");
-        }
-    }
+//    /**
+//     * 根据用户名、名字或工号查看个人信息(没有密码)
+//     * @param param
+//     * @return
+//     */
+//    @GetMapping("/searchPersonal_InformationByUsernameOrNameExcludePassword")
+//    public Msg searchPersonal_InformationByUsernameOrNameExcludePassword(@RequestParam("param")String param){
+//        try{
+//            List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationByUsernameOrNameExcludePassword(param);
+//            return Msg.success(personal_informationList);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return Msg.failure().setCode(401).setMessage("服务器错误");
+//        }
+//    }
 
-    /**
-     * 根据用户名或名字查看个人信息
-     * @param param
-     * @return
-     */
+//    /**
+//     * 根据用户名或名字查看个人信息
+//     * @param param
+//     * @return
+//     */
+//    @GetMapping("/searchPersonal_InformationByUsernameOrName")
+//    public Msg searchPersonal_InformationByUsernameOrName(@RequestParam("param")String param){
+//        try{
+//            List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationByUsernameOrNameExcludePassword(param);
+////            for(Personal_Information personal_information:personal_informationList){
+////                User user = userService.findByUsername(personal_information.getUsername());
+////                if (user == null)
+////                    user = userService.findByUsernameWithoutPermission(personal_information.getUsername());
+////                personal_information.setPassword(user.getPassword());
+////            }
+//            return Msg.success(personal_informationList);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return Msg.failure().setCode(401).setMessage("服务器错误");
+//        }
+//    }
+
     @GetMapping("/searchPersonal_InformationByUsernameOrName")
-    public Msg searchPersonal_InformationByUsernameOrName(@RequestParam("param")String param){
+    public Msg searchPersonal_InformationByUsernameOrName(@RequestParam("status")String status,@RequestParam("param")String param){
         try{
-            List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationByUsernameOrNameExcludePassword(param);
+            List<Personal_Information> personal_informationList = personal_informationMapper.searchPersonal_InformationByUsernameOrNameExcludePassword(status,param);
 //            for(Personal_Information personal_information:personal_informationList){
 //                User user = userService.findByUsername(personal_information.getUsername());
 //                if (user == null)

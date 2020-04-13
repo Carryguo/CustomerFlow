@@ -55,7 +55,18 @@
         select *
         from personal_information
         where
-        job_number like CONCAT(CONCAT('%', #{param}), '%') or name like CONCAT(CONCAT('%', #{param}), '%') or username like CONCAT(CONCAT('%', #{param}), '%')
+        (job_number like CONCAT(CONCAT('%', #{param}), '%') or name like CONCAT(CONCAT('%', #{param}), '%') or username like CONCAT(CONCAT('%', #{param}), '%'))
+        <choose>
+            <when test="status == '1'.toString()">
+               and uid = 1
+            </when>
+            <when test="status == '2'.toString()">
+              and  uid = 2
+            </when>
+            <otherwise>
+              and bossname = #{status}
+            </otherwise>
+        </choose>
     </select>
 
     <delete id="deletePersonal_InformationByUsername">

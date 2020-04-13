@@ -10,5 +10,5 @@ public interface ShopService {
     void deleteShop(String address);
     Integer checkShop(String address);
     void changeBondShop(String username,String address);
-    List<Shop> searchShopByAddress(String address);
+    List<Shop> searchShopByAddress(String address,String username);
 }

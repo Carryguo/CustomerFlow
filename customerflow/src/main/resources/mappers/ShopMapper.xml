@@ -38,6 +38,6 @@
     select *
     from shop
     where
-    address like  CONCAT(CONCAT('%', #{address}), '%')
+    address like  CONCAT(CONCAT('%', #{address}), '%') and username = #{username}
   </select>
 </mapper>

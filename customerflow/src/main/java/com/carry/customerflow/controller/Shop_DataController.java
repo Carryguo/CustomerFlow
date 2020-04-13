@@ -5,12 +5,15 @@ import com.carry.customerflow.bean.InCustomerPerHour;
 import com.carry.customerflow.bean.Msg;
 import com.carry.customerflow.bean.Shop_data;
 import com.carry.customerflow.mapper.Shop_dataMapper;
+import com.carry.customerflow.utils.DataUtil;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +25,16 @@ public class Shop_DataController {
     @Autowired
     private Shop_dataMapper shop_dataMapper;
 
+    @Autowired
+    private DataUtil dataUtil;
+
     @GetMapping("/getMainData")
     public Msg getMainData(@RequestParam("address")String address, @Param("dateTime")String dateTime){
         try{
+//            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+//            System.out.println(dataUtil.getDayDiffer(Date.valueOf(dateTime),new Date(System.currentTimeMillis())));
+
             Integer walker_number = 0;
             Integer customer_number = 0;
             Integer new_customer = 0;
@@ -45,6 +55,8 @@ public class Shop_DataController {
             map.put("newConsumer",new_customer);
             map.put("jmpOut",jumpout);
             map.put("dynamicConsumer",dynamicconsumer);
+
+
             return Msg.success().setData(map);
 
         }catch (Exception e){

@@ -152,9 +152,9 @@ public class MachineController {
     }
 
     @GetMapping("/searchMachineByMachineId")
-    public Msg searchMachineByMachineId(@RequestParam("machineId")String machineId){
+    public Msg searchMachineByMachineId(@RequestParam("machineId")String machineId,@RequestParam("address")String address){
         try{
-            List<Machine> machineList = machineService.searchMachineByMachineId(machineId);
+            List<Machine> machineList = machineService.searchMachineByMachineId(machineId,address);
             return Msg.success(machineList);
         }catch (Exception e){
             e.printStackTrace();
