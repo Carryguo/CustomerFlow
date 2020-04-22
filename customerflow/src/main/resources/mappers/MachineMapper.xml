@@ -37,7 +37,7 @@
         update
         machine
         set
-        rssi = #{rssi},leastRssi = #{leastRssi}
+        rssi = #{rssi},leastRssi = #{leastRssi},address = #{address}
         where
         machineId = #{machineId}
     </update>
@@ -46,5 +46,11 @@
         select * from machine
         where
         machineId like CONCAT(CONCAT('%', #{machineId}), '%') and address = #{address}
+    </select>
+
+    <select id="findMachineByUsername" resultType="com.carry.customerflow.bean.Machine">
+        select * from machine
+        where
+        username = #{username}
     </select>
 </mapper>

@@ -201,4 +201,18 @@ public class ShopController
             return Msg.failure().setCode(401).setMessage("服务器错误");
         }
     }
+
+    /**
+     * 返回所有店铺
+     * @return
+     */
+    @GetMapping("/findAllShop")
+    public Msg findAllShop(){
+        try{
+            List<String> shopList = shopService.findAllShop();
+            return Msg.success(shopList);
+        }catch (Exception e){
+            return Msg.failure().setCode(401).setMessage("服务器错误");
+        }
+    }
 }

@@ -122,7 +122,7 @@ public class MachineController {
     }
 
     @PostMapping("/editMachine")
-    public Msg editMachine(@RequestParam("machineId")String machineId,@RequestParam("rssi")String rssi,@RequestParam("leastRssi")String leastRssi){
+    public Msg editMachine(@RequestParam("machineId")String machineId,@RequestParam("rssi")String rssi,@RequestParam("leastRssi")String leastRssi,@RequestParam("address")String address){
         try{
             Integer rssiInt = Integer.parseInt(rssi);
             Integer leastRssiInt = Integer.parseInt(leastRssi);
@@ -139,8 +139,9 @@ public class MachineController {
             Map<String,Object> subMachineMap = (Map)redisUtil.hget("machine",machineId);
             subMachineMap.put("rssi",rssiInt);
             subMachineMap.put("leastRssi",leastRssiInt);
+            subMachineMap.put("address",address);
             redisUtil.hset("machine",machineId,subMachineMap);
-            Integer num = machineService.editMachine(machineId,rssiInt,leastRssiInt);
+            Integer num = machineService.editMachine(machineId,rssiInt,leastRssiInt,address);
             if (num==0){
                 Msg.failure().setCode(401).setMessage("设备编辑失败");
             }
@@ -155,6 +156,17 @@ public class MachineController {
     public Msg searchMachineByMachineId(@RequestParam("machineId")String machineId,@RequestParam("address")String address){
         try{
             List<Machine> machineList = machineService.searchMachineByMachineId(machineId,address);
+            return Msg.success(machineList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Msg.failure().setCode(401).setMessage("服务器错误");
+        }
+    }
+
+    @GetMapping("/findMachineByUsername")
+    public Msg findMachineByUsername(@RequestParam("username") String username){
+        try{
+            List<Machine> machineList = machineService.findMachineByUsername(username);
             return Msg.success(machineList);
         }catch (Exception e){
             e.printStackTrace();

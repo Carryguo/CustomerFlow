@@ -53,4 +53,9 @@ public class ShopServiceImp implements ShopService {
         return shopMapper.searchShopByAddress(address,username);
     }
 
+    @Override
+    public List<String> findAllShop() {
+        return shopMapper.findAllShop();
+    }
+
 }

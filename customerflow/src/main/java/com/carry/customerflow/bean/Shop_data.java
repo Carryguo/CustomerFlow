@@ -1,6 +1,8 @@
 package com.carry.customerflow.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 @Data
@@ -49,4 +51,5 @@ public class Shop_data {
      * hours 每个小时
      */
     private Integer hours;
+
 }

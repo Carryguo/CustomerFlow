@@ -75,4 +75,27 @@
     <delete id="deleteExpiredShop_data">
         delete from shop_data where update_time &lt; DATE_SUB(CURDATE(),INTERVAL 3 MONTH)
     </delete>
+
+    <select id="getDayComparison" resultType="com.carry.customerflow.bean.Shop_data">
+      select *
+      from shop_data
+      where (datediff ( update_time , date_sub(#{dateTime},interval #{num} day) ) = 0 ) and address = #{address}
+    </select>
+
+    <select id="getThisWeekComparison" resultType="com.carry.customerflow.bean.Shop_data">
+        select *
+        from shop_data
+        where (update_time &gt;= date_sub(#{dateTime},INTERVAL WEEKDAY(#{dateTime}) + 1 DAY)
+        and update_time &lt;= #{dateTime} or datediff ( update_time , #{dateTime}) = 0)
+        and address = #{address}
+    </select>
+    
+    <select id="getWeekComparison" resultType="com.carry.customerflow.bean.Shop_data">
+        select *
+        from shop_data
+        where (update_time &gt;= date_sub(#{dateTime},INTERVAL WEEKDAY(#{dateTime}) + (8+#{num}) DAY)
+            and update_time &lt;= date_sub(#{dateTime},INTERVAL WEEKDAY(#{dateTime}) + (2+#{num}) DAY)
+            or datediff ( update_time , date_sub(date_sub(#{dateTime},INTERVAL WEEKDAY(#{dateTime}) + (2+#{num}) DAY),interval 0 day) ) = 0)
+            and address = #{address}
+    </select>
 </mapper>

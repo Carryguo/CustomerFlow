@@ -12,6 +12,7 @@ public interface MachineService {
     List<Machine> findAllMachine();
     void deleteMachineByAddress(String address);
     void updateMachine(String machineId,String status);
-    Integer editMachine(String machineId,Integer rssi, Integer leastRssi);
+    Integer editMachine(String machineId,Integer rssi, Integer leastRssi,String address);
     List<Machine> searchMachineByMachineId (String MachineId,String address);
+    List<Machine> findMachineByUsername(String username);
 }
