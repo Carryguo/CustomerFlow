@@ -126,6 +126,7 @@ public class DataProcessor implements CommandLineRunner {
                         strReceive = new String(dp.getData(), 0, dp.getLength());
 //                        System.out.println(strReceive);
                         jsonObject = JSONObject.parseObject(strReceive);
+
                         if (jsonObject!=null){
 //                            Integer rssiJ;
 //                            String address;
