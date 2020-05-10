@@ -7,6 +7,6 @@ import java.sql.Timestamp;
 
 public interface CustomerService {
     Customer findCustomerByMac(String mac);
-    void insertCustomer(String mac, Integer rssi, String address, Timestamp first_in_time, Timestamp latest_in_time, Timestamp bean, Integer inJudge,Integer visited_times);
+    void insertCustomer(String mac, Integer rssi, String address, Timestamp first_in_time, Timestamp latest_in_time, Timestamp bean, Integer inJudge,Integer visited_times,Timestamp last_in_time);
 
 }

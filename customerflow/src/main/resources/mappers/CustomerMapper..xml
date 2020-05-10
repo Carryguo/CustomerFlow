@@ -7,16 +7,16 @@
 
     <insert id="insertCustomer">
         insert into customer
-        (mac,rssi,address,first_in_time,latest_in_time,beat,inJudge,visited_times)
+        (mac,rssi,address,first_in_time,latest_in_time,beat,inJudge,visited_times,last_in_time)
         values
-        (#{mac},#{rssi},#{address},#{first_in_time},#{latest_in_time},#{beat},#{inJudge},#{visited_times})
+        (#{mac},#{rssi},#{address},#{first_in_time},#{latest_in_time},#{beat},#{inJudge},#{visited_times},#{last_in_time})
     </insert>
 
     <update id="updateCustomer">
         UPDATE
         customer
         SET
-        rssi = #{rssi},first_in_time = #{first_in_time},latest_in_time = #{latest_in_time},beat = #{beat},inJudge = #{inJudge},visited_times = #{visited_times}
+        rssi = #{rssi},first_in_time = #{first_in_time},latest_in_time = #{latest_in_time},beat = #{beat},inJudge = #{inJudge},visited_times = #{visited_times},last_in_time = #{last_in_time}
         WHERE
         mac = #{mac}
     </update>

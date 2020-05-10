@@ -51,12 +51,12 @@ public class DataUtil {
             Customer customer = customerService.findCustomerByMac(mac);
             if (customer==null)
                 return false;
-            cacheCustomer(customer.getMac(),customer.getRssi(),customer.getAddress(),customer.getFirst_in_time(),customer.getLatest_in_time(),customer.getBeat(),customer.getInJudge(),customer.getVisited_times());
+            cacheCustomer(customer.getMac(),customer.getRssi(),customer.getAddress(),customer.getFirst_in_time(),customer.getLatest_in_time(),customer.getBeat(),customer.getInJudge(),customer.getVisited_times(),customer.getLast_in_time(),customer.getNickname());
             return true;
         }
     }
 
-    private void cacheCustomer(String mac, Integer rssi, String address, Timestamp first_in_time,Timestamp latest_in_time,Timestamp beat,Integer inJudge,Integer visited_times){
+    private void cacheCustomer(String mac, Integer rssi, String address, Timestamp first_in_time,Timestamp latest_in_time,Timestamp beat,Integer inJudge,Integer visited_times,Timestamp last_in_time,String nickname){
         customerMap = new HashMap<>();
         subCcustomerMap = new HashMap<>();
         subCcustomerMap.put("mac",mac);
@@ -67,6 +67,8 @@ public class DataUtil {
         subCcustomerMap.put("beat",beat);
         subCcustomerMap.put("inJudge",inJudge);
         subCcustomerMap.put("visited_times",visited_times);
+        subCcustomerMap.put("last_in_time",last_in_time);
+        subCcustomerMap.put("nickname",nickname);
         customerMap.put(mac,subCcustomerMap);
         redisUtil.hmset("customer",customerMap);
     }
@@ -76,10 +78,10 @@ public class DataUtil {
 //        System.out.println("insertCustomer的timestamp:"+timestamp);
 //        System.out.println(timestamp);
         //插入数据库
-        customerService.insertCustomer(mac,rssi,address,timestamp,timestamp,timestamp,inJudge,visited_times);
+        customerService.insertCustomer(mac,rssi,address,timestamp,timestamp,timestamp,inJudge,visited_times,timestamp);
 //        System.out.println("插入了数据");
         //插入redis缓存
-        cacheCustomer(mac,rssi,address,timestamp,timestamp,timestamp,inJudge,visited_times);
+        cacheCustomer(mac,rssi,address,timestamp,timestamp,timestamp,inJudge,visited_times,timestamp,null);
         return true;
     };
 
@@ -113,7 +115,7 @@ public class DataUtil {
             return (Map)redisUtil.hget("customer",mac);
         else{
             Customer customer = customerService.findCustomerByMac(mac);
-            cacheCustomer(customer.getMac(),customer.getRssi(),customer.getAddress(),customer.getFirst_in_time(),customer.getLatest_in_time(),customer.getBeat(),customer.getInJudge(),customer.getVisited_times());
+            cacheCustomer(customer.getMac(),customer.getRssi(),customer.getAddress(),customer.getFirst_in_time(),customer.getLatest_in_time(),customer.getBeat(),customer.getInJudge(),customer.getVisited_times(),customer.getLast_in_time(),customer.getNickname());
             return (Map)redisUtil.hget("customer",mac);
         }
     }

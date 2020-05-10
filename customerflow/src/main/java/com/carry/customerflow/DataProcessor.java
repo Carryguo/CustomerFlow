@@ -8,6 +8,7 @@ import com.carry.customerflow.mapper.Shop_dataMapper;
 import com.carry.customerflow.service.MachineService;
 import com.carry.customerflow.utils.DataUtil;
 import com.carry.customerflow.utils.RedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Async;
@@ -22,6 +23,7 @@ import java.util.Map;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Slf4j
 public class DataProcessor implements CommandLineRunner {
     //监听器端口
     private final static int PORT = 8082;
@@ -190,12 +192,18 @@ public class DataProcessor implements CommandLineRunner {
                                             if (timeCount >= 15) {
                                                 if (rssi>=rssiJ){
                                                     //更新cache信息
+                                                    //上次进店时间为上一次的first_in_time
+                                                    customerMap.put("last_in_time",(Long)customerMap.get("first_in_time"));
                                                     customerMap.put("first_in_time",latest_time);
                                                     customerMap.put("latest_in_time",latest_time);
                                                     customerMap.put("beat",latest_time);
                                                     customerMap.put("inJudge",1);
                                                     customerMap.put("rssi",rssi);
                                                     customerMap.put("visited_times",(Integer)customerMap.get("visited_times")+1);
+
+
+
+
                                                     dataUtil.refreshCache(mac,customerMap);
 
                                                     customer ++;
@@ -221,7 +229,10 @@ public class DataProcessor implements CommandLineRunner {
                                                         if ((Integer)customerMap.get("visited_times")==0)
                                                         {
                                                             newIn ++;
+                                                            customerMap.put("last_in_time",latest_time);
                                                         }
+                                                        //上次进店时间为上一次的first_in_time
+                                                        customerMap.put("last_in_time",(Long)customerMap.get("first_in_time"));
                                                         customerMap.put("first_in_time",latest_time);
                                                         customerMap.put("visited_times",(Integer)customerMap.get("visited_times")+1);
                                                     }
@@ -250,6 +261,14 @@ public class DataProcessor implements CommandLineRunner {
                                     }else
                                         continue;
                                 }
+//                                System.out.println("address:"+address);
+//                                System.out.println("customer:"+customer);
+//                                System.out.println("newIn:"+newIn);
+//                                System.out.println("jumpOut:"+jumpOut);
+//                                System.out.println("walker:"+walker);
+//                                System.out.println("hour_in_customer:"+hour_in_customer);
+//                                System.out.println("进来");
+//                                System.out.println(redisUtil.hmget("customer"));
                                 //这里更新
                                 if (customer!=0||newIn!=0||hour_in_customer!=0||walker!=0||jumpOut!=0){
                                     shop_dataMapper.updateShop_data(address,customer,newIn,hour_in_customer,walker,jumpOut);
@@ -385,8 +404,9 @@ public class DataProcessor implements CommandLineRunner {
             Map<String,Object> subCustomerMap_2 = dataUtil.getCustomerMap(subMac);
             Timestamp first_in_time = new Timestamp((Long)subCustomerMap_2.get("first_in_time"));
             Timestamp latest_in_time =  new Timestamp((Long)subCustomerMap_2.get("latest_in_time"));
+            Timestamp last_in_time =  new Timestamp((Long)subCustomerMap_2.get("last_in_time"));
             Timestamp beat = new Timestamp((Long)subCustomerMap_2.get("beat"));
-            customerMapper.updateCustomer(subMac,(Integer)subCustomerMap_2.get("rssi"),first_in_time,latest_in_time,beat,(Integer)subCustomerMap_2.get("inJudge"),(Integer)subCustomerMap_2.get("visited_times"));
+            customerMapper.updateCustomer(subMac,(Integer)subCustomerMap_2.get("rssi"),first_in_time,latest_in_time,beat,(Integer)subCustomerMap_2.get("inJudge"),(Integer)subCustomerMap_2.get("visited_times"),last_in_time);
         }
         //删除缓存
         redisUtil.del("customer");

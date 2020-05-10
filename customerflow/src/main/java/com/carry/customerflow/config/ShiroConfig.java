@@ -138,7 +138,10 @@ public class ShiroConfig {
                 filterChainDefinitionMap.put("/searchAllBoss","anon");
                 filterChainDefinitionMap.put("/register","anon");
                 filterChainDefinitionMap.put("/findShopByBossName","anon");
-//                filterChainDefinitionMap.put("/getAllDayComparison","anon");
+//                filterChainDefinitionMap.put("/searchAllCustomer","anon");
+//                filterChainDefinitionMap.put("/searchCustomerInshopNow","anon");
+//                filterChainDefinitionMap.put("/searchCustomerByMac","anon");
+//                filterChainDefinitionMap.put("/editNickname","anon");
 //                filterChainDefinitionMap.put("/getAllWeekComparison","anon");
 
         //开放其他接口(登录后可以访问)

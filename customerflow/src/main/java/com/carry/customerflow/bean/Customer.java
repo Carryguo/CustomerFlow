@@ -12,6 +12,10 @@ public class Customer {
      */
     private String mac;
     /**
+     * 昵称
+     */
+    private String nickname;
+    /**
      * rssi 信号强度
      */
     private Integer rssi;
@@ -39,4 +43,8 @@ public class Customer {
      * visited_times 访问次数
      */
     private Integer visited_times;
+    /**
+     * 上一次进店时间
+     */
+    private Timestamp last_in_time;
 }

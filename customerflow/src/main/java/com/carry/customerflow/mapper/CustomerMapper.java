@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface CustomerMapper {
     Customer findCustomerByMac(@Param("mac")String mac);
-    void insertCustomer(@Param("mac")String mac, @Param("rssi")Integer rssi, @Param("address")String address, @Param("first_in_time")Timestamp first_in_time,@Param("latest_in_time")Timestamp latest_in_time,@Param("beat")Timestamp beat,@Param("inJudge")Integer inJudge,@Param("visited_times")Integer visited_times);
-    void updateCustomer(@Param("mac")String mac,@Param("rssi")Integer rssi,@Param("first_in_time")Timestamp first_in_time,@Param("latest_in_time")Timestamp latest_in_time,@Param("beat")Timestamp beat,@Param("inJudge")Integer inJudge,@Param("visited_times")Integer visited_times);
+    void insertCustomer(@Param("mac")String mac, @Param("rssi")Integer rssi, @Param("address")String address, @Param("first_in_time")Timestamp first_in_time,@Param("latest_in_time")Timestamp latest_in_time,@Param("beat")Timestamp beat,@Param("inJudge")Integer inJudge,@Param("visited_times")Integer visited_times,@Param("last_in_time")Timestamp last_in_time);
+    void updateCustomer(@Param("mac")String mac,@Param("rssi")Integer rssi,@Param("first_in_time")Timestamp first_in_time,@Param("latest_in_time")Timestamp latest_in_time,@Param("beat")Timestamp beat,@Param("inJudge")Integer inJudge,@Param("visited_times")Integer visited_times,@Param("last_in_time")Timestamp last_in_time);
     List<String> searchExtraJumpOut();
     void updateInjudge();
     void test(@Param("mac")String mac);
