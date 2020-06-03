@@ -28,14 +28,21 @@ public class Customer_InshopController {
     @Autowired
     private Customer_InshopMapper customer_inshopMapper;
 
+    /**
+     * 查找全部客人的信息
+     * @param address
+     * @return
+     */
     @GetMapping("/searchAllCustomer")
     public Msg searchAllCustomer(@RequestParam("address")String address){
         try{
 
+            //在数据库查找客人的信息
             List<Customer_Inshop> customer_inshopList = customer_inshopMapper.searchAllCustomer(address);
 
             List<Customer_Inshop> customer_inshopListRs = new ArrayList<>();
 
+            //在redis中查找客人的信息
             Map<String,Object> customerMap = redisUtil.hmget("customer");
 
             for (Map.Entry<String, Object> subCustomerMap:customerMap.entrySet()) {
@@ -51,6 +58,7 @@ public class Customer_InshopController {
                 }
             }
 
+            //若数据库查找出来的数据和redis查找出来的数据有MAC地址一致的，就把数据库中的MAC地址数据去掉，留下redis查找出来的MAC地址数据
             Iterator<Customer_Inshop> iterator = customer_inshopList.iterator();
             while (iterator.hasNext()) {
                 Customer_Inshop integer = iterator.next();
@@ -60,6 +68,7 @@ public class Customer_InshopController {
                         iterator.remove();
                 }
             }
+            //合并数据
             customer_inshopListRs.addAll(customer_inshopList);
 
             return Msg.success().setData(customer_inshopListRs);
@@ -71,12 +80,17 @@ public class Customer_InshopController {
     }
 
 
+    /**
+     * 查找当前在店的客人
+     * @param address
+     * @return
+     */
     @GetMapping("/searchCustomerInshopNow")
     public Msg searchCustomerInshopNow(@RequestParam("address")String address){
         try{
 
             List<Customer_Inshop> customer_inshopListRs = new ArrayList<>();
-
+            //在redis中查找客人的信息
             Map<String,Object> customerMap = redisUtil.hmget("customer");
 
             for (Map.Entry<String, Object> subCustomerMap:customerMap.entrySet()) {
@@ -108,6 +122,7 @@ public class Customer_InshopController {
     @GetMapping("/searchCustomerByMac")
     public Msg searchCustomerByMac(@RequestParam("address")String address,@RequestParam("mac")String mac){
         try{
+            //在redis中查找客人的信息
             Map<String,Object> customerMap = redisUtil.hmget("customer");
 
             for (Map.Entry<String, Object> subCustomerMap:customerMap.entrySet()) {

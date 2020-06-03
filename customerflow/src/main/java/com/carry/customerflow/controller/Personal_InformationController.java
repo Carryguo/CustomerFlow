@@ -150,6 +150,12 @@ public class Personal_InformationController {
 //        }
 //    }
 
+    /**
+     * 根据用户名或名字模糊查询数据
+     * @param status
+     * @param param
+     * @return
+     */
     @GetMapping("/searchPersonal_InformationByUsernameOrName")
     public Msg searchPersonal_InformationByUsernameOrName(@RequestParam("status")String status,@RequestParam("param")String param){
         try{
@@ -167,6 +173,11 @@ public class Personal_InformationController {
         }
     }
 
+    /**
+     * 重置密码
+     * @param username
+     * @return
+     */
     @PostMapping("/resetPassword")
     public Msg resetPassword(@RequestParam("username")String username){
         try{

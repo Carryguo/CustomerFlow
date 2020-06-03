@@ -330,8 +330,9 @@ public class DataProcessor implements CommandLineRunner {
         for (Map.Entry<String, Object> subCustomerMap_1:subCustomerMap.entrySet()) {
                String subMac = subCustomerMap_1.getKey();
                Map<String,Object> subCustomerMap_2 = dataUtil.getCustomerMap(subMac);
+               //时间间隔
                Integer countTime = new Long((latest_time.getTime() - (Long)subCustomerMap_2.get("beat")) / (60*1000)).intValue();
-
+                //大于15分钟没有心跳的店内客人
                 if (countTime>=15&&(Integer)subCustomerMap_2.get("inJudge")==1)
                 {
                     Long stayTime = ((Long)subCustomerMap_2.get("latest_in_time")-(Long)subCustomerMap_2.get("first_in_time"))/1000;
@@ -344,6 +345,7 @@ public class DataProcessor implements CommandLineRunner {
                     dynamic_customer =1;
 //                    System.out.println("进来了");
                 }
+
             subAddress = (String)subCustomerMap_2.get("address");
                 if (jumpOut_customer!=0||dynamic_customer!=0)
                 if (countExtraMap.get(subAddress)==null){
@@ -359,6 +361,7 @@ public class DataProcessor implements CommandLineRunner {
                 }
             jumpOut_customer = 0;
             dynamic_customer = 0;
+            //存储在数据库中
             dataUtil.refreshCache(subMac,subCustomerMap_2);
 
 

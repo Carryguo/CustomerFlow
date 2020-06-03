@@ -76,6 +76,11 @@ public class Register_ApprovalController {
         }
     }
 
+    /**
+     * 根据店主的名字返回注册审批信息
+     * @param bossname
+     * @return
+     */
     @GetMapping("/searchRegister_ApprovalByBossname")
     public Msg searchRegister_ApprovalByBossname(@RequestParam("bossname")String bossname){
         try{

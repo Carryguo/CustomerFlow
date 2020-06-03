@@ -138,6 +138,11 @@ public class UserController {
         System.out.println(userMapper.findByUsernameTest(username));
     }
 
+
+    /**
+     * 查找所有店主的信息
+     * @return
+     */
     @GetMapping("/searchAllBoss")
     public Msg searchAllBoss(){
         try{
@@ -183,9 +188,13 @@ public class UserController {
                     machineMapper.deleteMachineByAddress(shop.getAddress());
                 }
             }
+            //删除用户
             userMapper.deleteUser(username);
+            //删除个人信息
             personal_informationMapper.deletePersonal_InformationByUsername(username);
+            //删除店主公告
             boss_noticeMapper.deleteBoss_NoticeByUsername(username);
+            //删除权限
             permissionMapper.deletePermissionByUsername(username);
             return Msg.success().setMessage("操作成功");
         }catch (Exception e){

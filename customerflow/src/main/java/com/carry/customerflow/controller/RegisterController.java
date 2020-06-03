@@ -81,10 +81,21 @@ public class RegisterController {
 //        return Msg.success("注册用户成功");
 //    }
 
-
+    /**
+     * 注册
+     * @param uid
+     * @param username
+     * @param password
+     * @param address
+     * @param bossname
+     * @return
+     */
     @PostMapping("/register")
     public Msg register(@RequestParam("uid")String uid,@RequestParam("username")String username,@RequestParam("password")String password,@RequestParam("address")String address,@RequestParam("bossname")String bossname){
         try{
+            /**
+             * uid：1 管理员，2 店主，3 店员
+             */
             if ("3".equals(uid)&&"".equals(address)){
                 return Msg.failure().setCode(401).setMessage("注册店员身份要查询店主的店铺,并且选择店铺进行绑定");
             }else if ("3".equals(uid)&&!"".equals(address)){

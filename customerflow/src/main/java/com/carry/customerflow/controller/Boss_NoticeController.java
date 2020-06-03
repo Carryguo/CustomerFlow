@@ -75,6 +75,12 @@ public class Boss_NoticeController {
         }
     }
 
+    /**
+     * 删除公告
+     * @param username
+     * @param id
+     * @return
+     */
     @DeleteMapping("/deleteBoss_Notice")
     public Msg deleteBoss_Notice(@RequestParam("username")String username,@RequestParam("id")String id){
         try{
@@ -86,7 +92,10 @@ public class Boss_NoticeController {
         }
     }
 
-    //检查权限
+    /**
+     * 查看权限
+     * @return
+     */
     @GetMapping("/checkBoss_NoticePermission")
     public Msg checkBoss_NoticePermission(){
         try{
